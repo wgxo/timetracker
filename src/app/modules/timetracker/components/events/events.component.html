@@ -1,0 +1,86 @@
+<div class="events-container">
+
+    <mat-expansion-panel expanded="expanded">
+        <mat-expansion-panel-header>
+            <mat-panel-title class="title">
+                Edit tasks
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+<div>
+    <button mat-fab
+            color="primary"
+            (click)="addEvent.emit()">
+        <mat-icon>add</mat-icon>
+    </button>
+</div>
+        <div class="table-responsive">
+            <table class="table table-bordered" width="100%">
+                <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Starts at</th>
+                    <th>Ends at</th>
+                    <th>Hours</th>
+                    <th>Remove</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr *ngFor="let event of events">
+                    <td>
+                        <mat-form-field appearance="standard" >
+                            <mat-label>Task description</mat-label>
+                            <input matInput placeholder="Not set"
+                                   [(ngModel)]="event.title"
+                                   (keyup)="refresh.next()">
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-form-field appearance="standard">
+                            <mat-label>Task start</mat-label>
+                            <input matInput
+                                   [ngxMatDatetimePicker]="picker1"
+                                   [(ngModel)]="event.start"
+                                   (ngModelChange)="refresh.next()"
+                                   placeholder="Not set"
+                            />
+                            <mat-datepicker-toggle matSuffix [for]="$any(picker1)"></mat-datepicker-toggle>
+                            <ngx-mat-datetime-picker #picker1>
+                            </ngx-mat-datetime-picker>
+                        </mat-form-field>
+
+                    </td>
+                    <td>
+                        <mat-form-field appearance="standard">
+                            <mat-label>Task end</mat-label>
+                            <input matInput
+                                   [ngxMatDatetimePicker]="picker2"
+                                   [(ngModel)]="event.end"
+                                   (ngModelChange)="refresh.next()"
+                                   placeholder="Not set"
+                            />
+                            <mat-datepicker-toggle matSuffix [for]="$any(picker2)"></mat-datepicker-toggle>
+                            <ngx-mat-datetime-picker #picker2>
+                            </ngx-mat-datetime-picker>
+                        </mat-form-field>
+
+                    </td>
+                    <td>
+                        <mat-form-field appearance="standard">
+                            <mat-label>Task duration (hrs)</mat-label>
+                            <input matInput [value]="calcDuration(event)" readonly >
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <button color="primary" mat-icon-button (click)="deleteEvent.emit(event)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </mat-expansion-panel>
+
+
+</div>

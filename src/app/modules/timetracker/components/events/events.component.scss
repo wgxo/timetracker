@@ -1,0 +1,33 @@
+.margin-top-16 {
+  margin-top: 16px;
+}
+
+.events-container {
+  @extend .margin-top-16;
+
+  .mat-form-field + .mat-form-field {
+    margin-left: 16px;
+  }
+
+   .mat-form-field {
+    width: 95%;
+  }
+}
+
+.table-row {
+  border-bottom: 1px solid #ccc;
+
+  .header {
+    font-weight: 500;
+    white-space: nowrap;
+  }
+}
+
+.add-button {
+  border-radius: 25px;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 500;
+}

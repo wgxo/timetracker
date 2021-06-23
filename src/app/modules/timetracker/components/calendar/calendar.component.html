@@ -1,0 +1,35 @@
+<div class="cal-container">
+    <div [ngSwitch]="view">
+        <mwl-calendar-month-view
+                *ngSwitchCase="CalendarView.Month"
+                [viewDate]="viewDate"
+                [events]="events"
+                [refresh]="refresh"
+                [activeDayIsOpen]="activeDayIsOpen"
+                (dayClicked)="dayClicked.emit($event.day)"
+                (eventClicked)="eventClicked.emit($event.event)"
+                (eventTimesChanged)="eventTimesChanged.emit($event)"
+        >
+        </mwl-calendar-month-view>
+        <mwl-calendar-week-view
+                *ngSwitchCase="CalendarView.Week"
+                [viewDate]="viewDate"
+                [events]="events"
+                [refresh]="refresh"
+                (eventClicked)="eventClicked.emit($event.event)"
+                (eventTimesChanged)="eventTimesChanged.emit($event)"
+        >
+        </mwl-calendar-week-view>
+        <mwl-calendar-day-view
+                *ngSwitchCase="CalendarView.Day"
+                [dayEndHour]="18"
+                [dayStartHour]="8"
+                [viewDate]="viewDate"
+                [events]="events"
+                [refresh]="refresh"
+                (eventClicked)="eventClicked.emit($event.event)"
+                (eventTimesChanged)="eventTimesChanged.emit($event)"
+        >
+        </mwl-calendar-day-view>
+    </div>
+</div>

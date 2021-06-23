@@ -4,10 +4,10 @@ import { AuthService } from './auth.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'Tic Tac Toe';
+  title = 'TimeTracker';
   isAuthenticated = false;
 
   constructor(public authService: AuthService) {

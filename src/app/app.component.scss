@@ -1,0 +1,19 @@
+.expanded-toolbar {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  text-decoration: none;
+  color: white;
+
+  img {
+    border: 0;
+  }
+
+  span {
+    font-size: 1.25rem;
+    margin-top: 6px;
+    margin-left: 8px;
+  }
+}

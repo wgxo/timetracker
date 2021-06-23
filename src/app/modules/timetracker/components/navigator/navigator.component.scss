@@ -1,0 +1,16 @@
+h1 {
+  margin: 0 auto;
+}
+
+mat-button-toggle-group {
+  flex-wrap: wrap;
+}
+
+.margin-16 {
+  margin-bottom: 16px;
+}
+
+.nav-container {
+  @extend .margin-16;
+}
+

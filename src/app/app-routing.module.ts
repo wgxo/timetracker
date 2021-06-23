@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
 import { HomeComponent } from './home/home.component';
-import { GameComponent } from './game/game.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuardService } from './auth-guard.service';
 
@@ -15,9 +15,9 @@ const routes: Routes = [
     component: LoginComponent
   },
   {
-    path: 'game',
-    component: GameComponent,
-    canActivate: [ AuthGuardService ]
+    path:         'timetracker',
+    canActivate: [ AuthGuardService ],
+    loadChildren: () => import('src/app/modules/timetracker/timetracker.module').then(m => m.TimeTrackerModule)
   },
 ];
 
