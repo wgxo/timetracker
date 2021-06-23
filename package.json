@@ -7,6 +7,9 @@
     "build": "ng build",
     "lint": "ng lint"
   },
+  "scarfSettings": {
+    "enabled": false
+  },
   "private": true,
   "dependencies": {
     "@angular-material-components/datetime-picker": "^5.1.1",
