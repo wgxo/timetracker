@@ -1,15 +1,41 @@
-<h1 mat-dialog-title>Event action occurred</h1>
+<h1 mat-dialog-title>Track your hours</h1>
 <div mat-dialog-content>
-    <div>
-        Action:
-        <pre>{{ data.action }}</pre>
+    <div fxLayout="column" fxlayoutGap="8px" fxLayoutAlign="start stretch">
+        <mat-form-field appearance="fill">
+            <mat-label>Task Description</mat-label>
+            <textarea matInput
+                      [autofocus]="true"
+                      [(ngModel)]="data.event.title"
+                      placeholder="Not set"></textarea>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Hours</mat-label>
+            <input matInput [value]="'1'" readonly>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Project</mat-label>
+            <input matInput [value]="data.event.meta?.project">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Assignment type</mat-label>
+            <input matInput [value]="data.event.meta?.assignmentType">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Date</mat-label>
+            <input matInput
+                   (click)="picker1.open()"
+                   [ngxMatDatetimePicker]="picker1"
+                   [(ngModel)]="data.event.start"
+                   placeholder="Not set"
+            />
+            <mat-datepicker-toggle matSuffix [for]="$any(picker1)"></mat-datepicker-toggle>
+            <ngx-mat-datetime-picker #picker1>
+            </ngx-mat-datetime-picker>
+        </mat-form-field>
     </div>
-    <div>
-        Event:
-        <pre>{{ data.event | json }}</pre>
-    </div>
+
 </div>
 <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">OK</button>
-<!--    <button mat-button [mat-dialog-close]="data.animal" cdkFocusInitial>Ok</button>-->
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-button [mat-dialog-close]="data.event" cdkFocusInitial>Ok</button>
 </div>

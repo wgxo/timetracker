@@ -1,9 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import {
-  CalendarEvent,
   CalendarEventAction, CalendarEventTimesChangedEvent, CalendarMonthViewDay,
-  CalendarView,
+  CalendarView, CalendarEvent,
 } from 'angular-calendar';
 import { Subject } from 'rxjs';
 
@@ -21,9 +20,14 @@ export class CalendarComponent {
   @Output() viewDateChange = new EventEmitter<Date>();
   @Input() activeDayIsOpen = false;
   @Input() refresh = new Subject<any>();
+  @Output() doubleClick = new EventEmitter();
   @Output() dayClicked = new EventEmitter<CalendarMonthViewDay>();
   @Output() eventClicked = new EventEmitter<CalendarEvent>();
   @Output() eventTimesChanged = new EventEmitter<CalendarEventTimesChangedEvent>();
 
   CalendarView = CalendarView;
+
+  newClick($event: any): void {
+    alert($event);
+  }
 }

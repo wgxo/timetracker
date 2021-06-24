@@ -2,7 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
+import { AngularEditorModule } from '@kolkov/angular-editor';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
@@ -20,6 +22,8 @@ const SHARED_MODULES = [
   ReactiveFormsModule,
   CommonModule,
   MatSharedModule,
+  HttpClientModule,
+  AngularEditorModule,
 ];
 
 @NgModule({

@@ -11,11 +11,13 @@
             [(view)]="view"
             [(viewDate)]="viewDate"
             [refresh]="refresh"
+            (doubleClick)="createEvent()"
             (dayClicked)="dayClicked($event)"
             (eventClicked)="handleEvent('Clicked', $event)"
             (eventTimesChanged)="eventTimesChanged($event)"
     ></app-calendar>
     <app-time-events [events]="events"
+                     [viewDate]="viewDate"
                      [refresh]="refresh"
                      (deleteEvent)="deleteEvent($event)"
                      (addEvent)="addEvent()">
