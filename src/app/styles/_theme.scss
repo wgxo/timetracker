@@ -1,0 +1,45 @@
+@import 'variables';
+
+@include mat-core();
+
+/* ======== Angular material custom themes ======== */
+$light-primary: mat-palette($customPrimary);
+$light-accent: mat-palette($customAccent, 100, 500, A100);
+$light-warn: mat-palette($mat-red);
+
+$light-theme: mat-light-theme($light-primary, $light-accent, $light-warn);
+
+// Convert => mat-light-theme()
+//$light-theme: mat-light-theme($light-primary, $light-accent);
+
+// Convert to this => mat-dark-theme()
+//$light-theme: mat-dark-theme($light-primary, $light-accent);
+
+$dark-primary: mat-palette($mat-blue-grey, 700);
+$dark-accent: mat-palette($mat-amber, A200, A100, A400);
+$dark-warn: mat-palette($mat-deep-orange);
+$dark-theme: mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
+
+@include angular-material-theme($light-theme);
+
+//$custom-background-color: #273238;
+$custom-background-color: map_get($mat-blue-grey, 900);
+
+$background: map-get($dark-theme, background);
+$background: map_merge($background, (background: $custom-background-color));
+$dark-theme: map_merge($dark-theme, (background: $background));
+
+.darkMode {
+  @include angular-material-color($dark-theme);
+}
+
+.darkMode {
+  .container {
+    background-color: $custom-background-color;
+    height: 100%;
+  }
+
+  h1 {
+    color: white;
+  }
+}

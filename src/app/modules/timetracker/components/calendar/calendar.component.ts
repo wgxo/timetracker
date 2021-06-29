@@ -26,8 +26,4 @@ export class CalendarComponent {
   @Output() eventTimesChanged = new EventEmitter<CalendarEventTimesChangedEvent>();
 
   CalendarView = CalendarView;
-
-  newClick($event: any): void {
-    alert($event);
-  }
 }

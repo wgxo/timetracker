@@ -22,6 +22,7 @@ import { colors } from '../../utils/colors';
 import { EventEditorComponent } from '../event-editor/event-editor.component';
 import { BDMetaData } from '../../models/bd-metadata.model';
 import { INITIAL_EVENTS } from '../../utils/initial-events';
+import { Category } from '../../enums/category.enum';
 
 @Component({
   selector: 'app-timetracker-container',
@@ -92,7 +93,7 @@ export class ContainerComponent implements OnInit {
           start: newStart,
           end: newEnd,
           meta: {
-            assignmentType: 'Software Development',
+            task: {category: Category.DEVELOPMENT, name: 'Features development'},
             project: 'Customer - Infrastructure',
           },
         };
@@ -114,7 +115,6 @@ export class ContainerComponent implements OnInit {
     // });
   }
 
-
   deleteEvent(eventToDelete: CalendarEvent): void {
     this.events = this.events.filter((event) => event !== eventToDelete);
   }
@@ -132,7 +132,7 @@ export class ContainerComponent implements OnInit {
           afterEnd: true,
         },
         meta: {
-          assignmentType: 'Software Development',
+          task: {category: Category.DEVELOPMENT, name: 'Features development'},
           project: 'Customer - Infrastructure',
         },
       },
@@ -152,7 +152,7 @@ export class ContainerComponent implements OnInit {
         afterEnd: true,
       },
       meta: {
-        assignmentType: 'Software Development',
+        task: {category: Category.DEVELOPMENT, name: 'Features development'},
         project: 'Customer - Infrastructure',
       },
     };

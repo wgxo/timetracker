@@ -15,6 +15,7 @@ import { EventsComponent } from './components/events/events.component';
 import { MatSharedModule } from '../../mat-shared.module';
 import { TimeTrackerRoutingModule } from './timetracker-routing.module';
 import { EventEditorComponent } from './components/event-editor/event-editor.component';
+import { PreferencesComponent } from './components/preferences/preferences.component';
 
 const SHARED_MODULES = [
   FlexLayoutModule,
@@ -27,7 +28,14 @@ const SHARED_MODULES = [
 ];
 
 @NgModule({
-  declarations: [ContainerComponent, NavigatorComponent, CalendarComponent, EventsComponent, EventEditorComponent],
+  declarations: [
+    ContainerComponent,
+    NavigatorComponent,
+    CalendarComponent,
+    EventsComponent,
+    EventEditorComponent,
+    PreferencesComponent,
+  ],
   imports: [
     TimeTrackerRoutingModule,
     CalendarModule.forRoot({
@@ -37,4 +45,5 @@ const SHARED_MODULES = [
     ...SHARED_MODULES,
   ],
 })
-export class TimeTrackerModule { }
+export class TimeTrackerModule {
+}

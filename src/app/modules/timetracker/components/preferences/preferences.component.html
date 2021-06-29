@@ -1,0 +1,52 @@
+<h1 mat-dialog-title>Preferences</h1>
+<div mat-dialog-content>
+    <form [formGroup]="form">
+        <div fxLayout="column" fxLayoutGap="8px" fxLayoutAlign="start stretch">
+            <mat-form-field appearance="fill">
+                <mat-label>Default project</mat-label>
+                <mat-select formControlName="project" (valueChange)="getFocals($event)">
+                    <mat-option *ngFor="let project of projects" [value]="project">
+                        {{ project }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Focal point</mat-label>
+                <mat-select formControlName="focalPoint">
+                    <mat-option *ngFor="let focal of focals" [value]="focal">
+                        {{ focal }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Default category</mat-label>
+                <mat-select formControlName="category" (valueChange)="getTasks($event)">
+                    <mat-option *ngFor="let category of categories" [value]="category">
+                        {{ category }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Default task</mat-label>
+                <mat-select formControlName="task">
+                    <mat-option *ngFor="let task of tasks" [value]="task">
+                        {{ task }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Default hours</mat-label>
+                <input matInput formControlName="hours">
+            </mat-form-field>
+
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-button [mat-dialog-close]="getPreferencesModel()" cdkFocusInitial>Ok</button>
+</div>

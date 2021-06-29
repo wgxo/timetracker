@@ -33,6 +33,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import {
   NgxMatDatetimePickerModule,
@@ -77,6 +78,7 @@ const materialModules = [
   NgxMatNativeDateModule,
   NgxMatTimepickerModule,
   MatDialogModule,
+  MatSlideToggleModule,
 ];
 
 @NgModule({

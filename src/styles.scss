@@ -18,3 +18,9 @@ a, a:hover, a:focus, a:active {
     text-decoration: none;
     color: inherit;
 }
+
+html, body, app-root, .app-frame {
+    margin: 0;
+    height: 100%;
+    box-sizing: border-box;
+}

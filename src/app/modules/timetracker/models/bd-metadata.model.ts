@@ -1,4 +1,6 @@
+import { TaskModel } from './task.model';
+
 export class BDMetaData {
   project = '';
-  assignmentType = '';
+  task = null as unknown as TaskModel;
 }
