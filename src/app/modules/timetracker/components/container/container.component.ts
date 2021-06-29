@@ -1,15 +1,12 @@
 import {
-  Component, OnInit,
+  Component,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import {
-  addDays,
   addHours,
-  endOfDay,
-  endOfMonth, isSameDay, isSameMonth,
+  isSameDay, isSameMonth,
   startOfDay,
-  subDays,
 } from 'date-fns';
 import {
   CalendarEvent,
@@ -20,9 +17,7 @@ import { Subject } from 'rxjs';
 
 import { colors } from '../../utils/colors';
 import { EventEditorComponent } from '../event-editor/event-editor.component';
-import { BDMetaData } from '../../models/bd-metadata.model';
 import { INITIAL_EVENTS } from '../../utils/initial-events';
-import { Category } from '../../enums/category.enum';
 import { StorageService } from '../../services/storage.service';
 import { PreferencesModel } from '../../models/preferences.model';
 import { TaskModel } from '../../models/task.model';
@@ -32,33 +27,37 @@ import { TaskModel } from '../../models/task.model';
   templateUrl: './container.component.html',
   styleUrls: ['./container.component.scss'],
 })
-export class ContainerComponent implements OnInit {
+export class ContainerComponent {
   viewDate: Date = new Date();
   view: CalendarView = CalendarView.Month;
   activeDayIsOpen = true;
   refresh: Subject<any> = new Subject();
   prefs: PreferencesModel;
 
+  editAction: CalendarEventAction = {
+    label: '<i class="fas fa-fw fa-pencil-alt"></i>',
+    a11yLabel: 'Edit',
+    onClick: ({ event }: { event: CalendarEvent }): void => {
+      this.handleEvent('Edited', event);
+    },
+  };
+
+  deleteAction: CalendarEventAction = {
+    label: '<i class="fas fa-fw fa-trash-alt"></i>',
+    a11yLabel: 'Delete',
+    onClick: ({ event }: { event: CalendarEvent }): void => {
+      this.events = this.events.filter((iEvent) => iEvent !== event);
+      this.handleEvent('Deleted', event);
+    },
+  };
+
   actions: CalendarEventAction[] = [
-    {
-      label: '<i class="fas fa-fw fa-pencil-alt"></i>',
-      a11yLabel: 'Edit',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.handleEvent('Edited', event);
-      },
-    },
-    {
-      label: '<i class="fas fa-fw fa-trash-alt"></i>',
-      a11yLabel: 'Delete',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.events = this.events.filter((iEvent) => iEvent !== event);
-        this.handleEvent('Deleted', event);
-      },
-    },
+    this.editAction,
+    this.deleteAction,
   ];
 
   events = INITIAL_EVENTS.map(e => {
-    e.actions = this.actions;
+    e.actions = [];
     return e;
   });
 
@@ -79,9 +78,6 @@ export class ContainerComponent implements OnInit {
       task: null as unknown as TaskModel,
       focalPoint: '',
     };
-  }
-
-  ngOnInit(): void {
   }
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
@@ -119,15 +115,10 @@ export class ContainerComponent implements OnInit {
   }
 
   handleEvent(action: string, event: CalendarEvent): void {
-    const dialogRef = this.dialog.open(EventEditorComponent, {
+    this.dialog.open(EventEditorComponent, {
       width: '500px',
       data: { event, action },
     });
-
-    // dialogRef.afterClosed().subscribe(result => {
-    //   console.log('The dialog was closed');
-    //   this.data = result;
-    // });
   }
 
   deleteEvent(eventToDelete: CalendarEvent): void {
@@ -160,7 +151,8 @@ export class ContainerComponent implements OnInit {
       title: 'New task',
       start: startOfDay(this.viewDate),
       end: addHours(this.viewDate, this.prefs.hours),
-      color: colors.yellow,
+      color: colors.blue,
+      actions: this.actions,
       draggable: true,
       resizable: {
         beforeStart: true,

@@ -5,6 +5,7 @@ import {
   CalendarView, CalendarEvent,
 } from 'angular-calendar';
 import { Subject } from 'rxjs';
+import { BDMetaData } from '../../models/bd-metadata.model';
 
 @Component({
   selector: 'app-calendar',
@@ -26,4 +27,19 @@ export class CalendarComponent {
   @Output() eventTimesChanged = new EventEmitter<CalendarEventTimesChangedEvent>();
 
   CalendarView = CalendarView;
+
+  calcDuration(event: CalendarEvent<BDMetaData>): string {
+    if (event && event.end && event.start) {
+      return String(((event.end.getTime() - event.start.getTime()) / 1000 / 3600).toFixed(2));
+    }
+
+    return '0';
+  }
+
+  totalHours(events: CalendarEvent[]): number {
+    let total = 0;
+    events.forEach(e => total += Number(this.calcDuration(e)));
+
+    return total;
+  }
 }

@@ -10,6 +10,7 @@
                 (dayClicked)="dayClicked.emit($event.day)"
                 (eventClicked)="eventClicked.emit($event.event)"
                 (eventTimesChanged)="eventTimesChanged.emit($event)"
+                [openDayEventsTemplate]="openDayEventsTemplate"
         >
         </mwl-calendar-month-view>
         <mwl-calendar-week-view
@@ -38,3 +39,57 @@
         </mwl-calendar-day-view>
     </div>
 </div>
+<ng-template
+    #openDayEventsTemplate2
+    let-events="events"
+    let-isOpen="isOpen">
+
+    <!-- The [@collapse] is causing the error. -->
+    <div class="cal-open-day-events" [@collapse] *ngIf="isOpen">
+        <div *ngFor="let event of events" [ngClass]="event?.cssClass">
+            <span class="cal-event" [style.backgroundColor]="event.color?.primary"></span>
+            <mwl-calendar-event-title [event]="event"
+                                      view="month">
+            </mwl-calendar-event-title>
+        </div>
+    </div>
+
+</ng-template>
+
+<ng-template
+    #openDayEventsTemplate
+    let-isOpen="isOpen"
+    let-events="events"
+    let-eventClicked="eventClicked">
+    <div class="cal-open-day-events"  *ngIf="isOpen"
+    fxLayout="column"
+    fxLayoutGap="8px">
+        <div
+                *ngFor="let event of events"
+                [ngClass]="event?.cssClass"
+                mwlDraggable
+                [dropData]="{event: event}"
+                [dragAxis]="{x: event.draggable, y: event.draggable}">
+        <span
+                class="cal-event"
+                [style.backgroundColor]="event.color.primary">
+        </span>
+            <mwl-calendar-event-title
+                    [event]="event"
+                    [customTemplate]="eventTitleTemplate"
+                    view="month"
+                    (mwlClick)="eventClicked.emit({event: event})">
+            </mwl-calendar-event-title>
+            <mwl-calendar-event-actions [event]="event"></mwl-calendar-event-actions>
+        </div>
+        <div>
+            <b>Hours worked: {{ totalHours(events) }}</b>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template
+    #eventTitleTemplate
+    let-event="event">
+    {{ event.meta.task.category }} - {{ event.meta.task.name }} - {{ event.title }}
+</ng-template>
