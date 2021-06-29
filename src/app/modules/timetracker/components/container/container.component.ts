@@ -23,6 +23,9 @@ import { EventEditorComponent } from '../event-editor/event-editor.component';
 import { BDMetaData } from '../../models/bd-metadata.model';
 import { INITIAL_EVENTS } from '../../utils/initial-events';
 import { Category } from '../../enums/category.enum';
+import { StorageService } from '../../services/storage.service';
+import { PreferencesModel } from '../../models/preferences.model';
+import { TaskModel } from '../../models/task.model';
 
 @Component({
   selector: 'app-timetracker-container',
@@ -34,6 +37,7 @@ export class ContainerComponent implements OnInit {
   view: CalendarView = CalendarView.Month;
   activeDayIsOpen = true;
   refresh: Subject<any> = new Subject();
+  prefs: PreferencesModel;
 
   actions: CalendarEventAction[] = [
     {
@@ -58,12 +62,23 @@ export class ContainerComponent implements OnInit {
     return e;
   });
 
-  constructor(public dialog: MatDialog) {
+  constructor(
+    public dialog: MatDialog,
+    private readonly storage: StorageService
+    ) {
     const todayEvents = this.events.filter(e => isSameMonth(e.start, this.viewDate) && isSameDay(this.viewDate, e.start));
 
     if (todayEvents.length === 0) {
       this.activeDayIsOpen = false;
     }
+
+    const preferences = this.storage.get('preferences');
+    this.prefs = preferences ? JSON.parse(preferences) as PreferencesModel : {
+      project: '',
+      hours: 1,
+      task: null as unknown as TaskModel,
+      focalPoint: '',
+    };
   }
 
   ngOnInit(): void {
@@ -93,8 +108,8 @@ export class ContainerComponent implements OnInit {
           start: newStart,
           end: newEnd,
           meta: {
-            task: {category: Category.DEVELOPMENT, name: 'Features development'},
-            project: 'Customer - Infrastructure',
+            task: this.prefs.task,
+            project: this.prefs.project,
           },
         };
       }
@@ -124,7 +139,7 @@ export class ContainerComponent implements OnInit {
       {
         title: 'New task',
         start: startOfDay(date),
-        end: addHours(date, 1),
+        end: addHours(date, this.prefs.hours),
         color: colors.blue,
         draggable: true,
         resizable: {
@@ -132,8 +147,8 @@ export class ContainerComponent implements OnInit {
           afterEnd: true,
         },
         meta: {
-          task: {category: Category.DEVELOPMENT, name: 'Features development'},
-          project: 'Customer - Infrastructure',
+          task: this.prefs.task,
+          project: this.prefs.project,
         },
       },
       ...this.events,
@@ -144,7 +159,7 @@ export class ContainerComponent implements OnInit {
     const event = {
       title: 'New task',
       start: startOfDay(this.viewDate),
-      end: addHours(this.viewDate, 1),
+      end: addHours(this.viewDate, this.prefs.hours),
       color: colors.yellow,
       draggable: true,
       resizable: {
@@ -152,14 +167,19 @@ export class ContainerComponent implements OnInit {
         afterEnd: true,
       },
       meta: {
-        task: {category: Category.DEVELOPMENT, name: 'Features development'},
-        project: 'Customer - Infrastructure',
+        task: this.prefs.task,
+        project: this.prefs.project,
       },
     };
-    this.events = [event, ...this.events];
     const dialogRef = this.dialog.open(EventEditorComponent, {
       width: '500px',
       data: { event, action: 'Double click' },
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.events = [...this.events, event];
+        this.createEvent();
+      }
     });
   }
 }

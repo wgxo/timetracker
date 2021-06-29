@@ -4,6 +4,9 @@ import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 
 import { EventData } from '../../models/event-data.model';
+import { StorageService } from '../../services/storage.service';
+import { PreferencesModel } from '../../models/preferences.model';
+import { TaskModel } from '../../models/task.model';
 
 @Component({
   selector: 'app-event-editor',
@@ -14,7 +17,9 @@ export class EventEditorComponent {
 
   constructor(
     public dialogRef: MatDialogRef<EventEditorComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: EventData) {}
+    @Inject(MAT_DIALOG_DATA) public data: EventData,
+) {
+  }
 
   editorConfig: AngularEditorConfig = {
     editable: true,

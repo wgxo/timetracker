@@ -3,22 +3,30 @@
     <div fxLayout="column" fxlayoutGap="8px" fxLayoutAlign="start stretch">
         <mat-form-field appearance="fill">
             <mat-label>Task Description</mat-label>
-            <textarea matInput
+            <input matInput
                       [autofocus]="true"
+                      (keyup)="$event.key === 'Enter' && dialogRef.close(data.event)"
+                      cdkfocusinitial
                       [(ngModel)]="data.event.title"
-                      placeholder="Not set"></textarea>
+                      placeholder="Not set">
         </mat-form-field>
         <mat-form-field appearance="fill">
             <mat-label>Hours</mat-label>
-            <input matInput [value]="'1'" readonly>
+            <input matInput [value]="'1'"
+                   (keyup)="$event.key === 'Enter' && dialogRef.close(data.event)"
+            >
         </mat-form-field>
         <mat-form-field appearance="fill">
             <mat-label>Project</mat-label>
             <input matInput [value]="data.event.meta?.project">
         </mat-form-field>
         <mat-form-field appearance="fill">
-            <mat-label>Assignment type</mat-label>
-            <input matInput [value]="data.event.meta?.assignmentType">
+            <mat-label>Task category</mat-label>
+            <input matInput [value]="data.event.meta?.task?.category">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Task description</mat-label>
+            <input matInput [value]="data.event.meta?.task?.name">
         </mat-form-field>
         <mat-form-field appearance="fill">
             <mat-label>Date</mat-label>
@@ -37,5 +45,5 @@
 </div>
 <div mat-dialog-actions>
     <button mat-button (click)="onNoClick()">Cancel</button>
-    <button mat-button [mat-dialog-close]="data.event" cdkFocusInitial>Ok</button>
+    <button mat-button [mat-dialog-close]="data.event">Ok</button>
 </div>
