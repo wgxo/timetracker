@@ -18,12 +18,25 @@
             <mat-icon>edit_calendar</mat-icon>
             Track hours
         </button>
+        <div fxLayout="row" fxLayoutAlign="space-evenly center" fxLayoutGap="8px">
+            <mat-icon title="Light mode">brightness_5</mat-icon>
+            <mat-slide-toggle [formControl]="toggleControl" title="Toggle theme">
+            </mat-slide-toggle>
+            <mat-icon title="Dark mode">bedtime</mat-icon>
+        </div>
+        <button mat-button (click)="openPrefs()" title="Preferences">
+            <mat-icon>settings</mat-icon>
+        </button>
     </div>
     <button mat-button [mat-menu-trigger-for]="menu" fxHide="false" fxHide.gt-sm>
         <mat-icon>menu</mat-icon>
     </button>
 </mat-toolbar>
 <mat-menu x-position="before" #menu="matMenu">
+    <div mat-menu-item>
+        <mat-checkbox [formControl]="toggleControl">Dark theme</mat-checkbox>
+    </div>
+    <mat-divider></mat-divider>
     <button mat-menu-item routerLink="/">
         <mat-icon>home</mat-icon>
         Home
@@ -31,6 +44,10 @@
     <button mat-menu-item routerLink="/timetracker">
         <mat-icon>edit_calendar</mat-icon>
         Track hours
+    </button>
+    <button mat-menu-item (click)="openPrefs()">
+        <mat-icon>settings</mat-icon>
+        Preferences
     </button>
     <button mat-menu-item routerLink="/login" *ngIf="!isAuthenticated">
         <mat-icon>power_settings_new</mat-icon>
