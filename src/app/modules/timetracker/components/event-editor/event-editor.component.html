@@ -3,7 +3,7 @@
     <div fxLayout="column" fxlayoutGap="8px" fxLayoutAlign="start stretch">
         <mat-form-field appearance="fill">
             <mat-label>Task Description</mat-label>
-            <input matInput
+            <input matInput #desc (focus)="desc.select()"
                       [autofocus]="true"
                       (keyup)="$event.key === 'Enter' && dialogRef.close(data.event)"
                       cdkfocusinitial
