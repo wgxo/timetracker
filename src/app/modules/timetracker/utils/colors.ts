@@ -1,4 +1,9 @@
-export const colors: any = {
+export interface EventColor {
+  primary: string;
+  secondary: string;
+}
+
+export const colors = {
   red: {
     primary: '#ad2121',
     secondary: '#FAE3E3',

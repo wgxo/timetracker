@@ -47,6 +47,6 @@
     </form>
 </div>
 <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">Cancel</button>
-    <button mat-button [mat-dialog-close]="getPreferencesModel()" cdkFocusInitial>Ok</button>
+    <button mat-flat-button (click)="onNoClick()">Cancel</button>
+    <button mat-flat-button [mat-dialog-close]="getPreferencesModel()" cdkFocusInitial color="primary">Ok</button>
 </div>

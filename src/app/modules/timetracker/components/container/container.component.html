@@ -15,7 +15,7 @@
         (eventClicked)="handleEvent('Clicked', $event)"
         (eventTimesChanged)="eventTimesChanged($event)"
 ></app-calendar>
-<app-time-events [events]="events"
+<app-time-events [events]="sortedEvents"
                  [viewDate]="viewDate"
                  [refresh]="refresh"
                  (deleteEvent)="deleteEvent($event)"

@@ -1,28 +1,31 @@
-import {
-  Component, OnDestroy, OnInit,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import {
   CalendarEvent,
-  CalendarEventAction, CalendarEventTimesChangedEvent,
+  CalendarEventAction,
+  CalendarEventTimesChangedEvent,
   CalendarView,
 } from 'angular-calendar';
 import { Subject, Subscription } from 'rxjs';
 import {
-  addHours, addMinutes, isAfter,
+  addHours,
+  addMinutes,
+  differenceInSeconds,
+  isAfter,
   isSameDay,
   isSameMonth,
-  isToday,
   startOfDay,
 } from 'date-fns';
 
-import { colors } from '../../utils/colors';
+import { colors, EventColor } from '../../utils/colors';
 import { EventEditorComponent } from '../event-editor/event-editor.component';
 import { StorageService } from '../../services/storage.service';
 import { PreferencesModel } from '../../models/preferences.model';
 import { TaskModel } from '../../models/task.model';
 import { BDMetaData } from '../../models/bd-metadata.model';
+import { Category } from '../../enums/category.enum';
+import { EventData } from '../../models/event-data.model';
 
 @Component({
   selector: 'app-timetracker-container',
@@ -76,15 +79,10 @@ export class ContainerComponent implements OnInit, OnDestroy {
     this.readPrefs();
     this.readEvents();
 
-    const todayEvents = this.events.filter(e => isSameMonth(e.start, this.viewDate) && isSameDay(this.viewDate, e.start));
-
-    if (todayEvents.length === 0) {
-      this.activeDayIsOpen = false;
-    }
-
     this.prefsEvent = this.storage.storing$.subscribe(storing => {
       if (storing) {
         this.readPrefs();
+        this.readEvents();
       }
     });
   }
@@ -97,6 +95,12 @@ export class ContainerComponent implements OnInit, OnDestroy {
     const evs = this.storage.get<CalendarEvent<BDMetaData>[]>('events');
     if (evs) {
       this.events = evs;
+    }
+
+    const todayEvents = this.events.filter(e => isSameMonth(e.start, this.viewDate) && isSameDay(this.viewDate, e.start));
+
+    if (todayEvents.length === 0) {
+      this.activeDayIsOpen = false;
     }
   }
 
@@ -111,7 +115,7 @@ export class ContainerComponent implements OnInit, OnDestroy {
     const oldDate = this.viewDate;
     this.viewDate = date;
     if (isSameMonth(date, oldDate)) {
-      if ((isSameDay(oldDate, date) && this.activeDayIsOpen === true) || events.length === 0) {
+      if ((isSameDay(oldDate, date) && this.activeDayIsOpen) || events.length === 0) {
         this.activeDayIsOpen = false;
       } else {
         this.activeDayIsOpen = true;
@@ -180,6 +184,24 @@ export class ContainerComponent implements OnInit, OnDestroy {
     return last;
   }
 
+  get totalHours(): number {
+    let total = 0.0;
+    this.events
+      .filter(e => isSameMonth(this.viewDate, e.start))
+      .forEach(e => total += Number(e.meta?.hours));
+
+    return total;
+  }
+
+  get currentHours(): number {
+    let total = 0.0;
+    this.events
+      .filter(e => isSameDay(this.viewDate, e.start))
+      .forEach(e => total += Number(e.meta?.hours));
+
+    return total;
+  }
+
   public createEvent(): void {
     const event: CalendarEvent = {
       title: 'New task',
@@ -187,16 +209,21 @@ export class ContainerComponent implements OnInit, OnDestroy {
       end: addHours(this.viewDate, this.prefs.hours),
       meta: this.prefs,
     };
-    const dialogRef = this.dialog.open(EventEditorComponent, {
-      width: '500px',
-      data: { event, action: 'Double click' },
-    });
-    dialogRef.afterClosed().subscribe((result: CalendarEvent<BDMetaData>) => {
+    const dialogRef = this.dialog.open<EventEditorComponent, EventData, CalendarEvent<BDMetaData>>(
+      EventEditorComponent, {
+        width: '640px',
+        data: {
+          event,
+          currentHours: this.currentHours,
+          totalHours: this.totalHours,
+        },
+      });
+    dialogRef.afterClosed().subscribe(result => {
       if (result) {
         result.end = addMinutes(result.start, (result.meta?.hours ?? this.prefs.hours) * 60);
         result = {
           ...result,
-          color: colors.blue,
+          color: this.getColor(result),
           actions: this.actions,
           draggable: true,
           resizable: {
@@ -209,5 +236,21 @@ export class ContainerComponent implements OnInit, OnDestroy {
         this.createEvent();
       }
     });
+  }
+
+  public getColor(result: CalendarEvent<BDMetaData>): EventColor {
+    if (result.meta?.task.category === Category.ABSENCE) {
+      return colors.red;
+    }
+
+    if (result.meta?.task.category === Category.DEVELOPMENT) {
+      return colors.blue;
+    }
+
+    return colors.yellow;
+  }
+
+  get sortedEvents(): CalendarEvent<BDMetaData>[] {
+    return this.events.sort((a, b) => differenceInSeconds(a.start, b.start));
   }
 }

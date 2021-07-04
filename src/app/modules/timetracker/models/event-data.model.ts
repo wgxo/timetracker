@@ -3,6 +3,7 @@ import { CalendarEvent } from 'angular-calendar';
 import { BDMetaData } from './bd-metadata.model';
 
 export interface EventData {
-  action: string;
+  totalHours: number;
+  currentHours: number;
   event: CalendarEvent<BDMetaData>;
 }

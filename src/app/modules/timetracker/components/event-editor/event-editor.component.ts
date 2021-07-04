@@ -1,4 +1,4 @@
-import { Component, Inject, Injector, OnInit } from '@angular/core';
+import { Component, Inject, Injector, Input, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, FormGroup } from '@angular/forms';
 
@@ -16,7 +16,6 @@ import { CalendarEvent } from 'angular-calendar';
   styleUrls: ['./event-editor.component.scss'],
 })
 export class EventEditorComponent extends HasFormComponent implements OnInit {
-
   constructor(
     public injector: Injector,
     public dialogRef: MatDialogRef<EventEditorComponent>,
