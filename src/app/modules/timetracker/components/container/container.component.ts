@@ -1,5 +1,5 @@
 import {
-  Component,
+  Component, OnDestroy,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -8,33 +8,39 @@ import {
   CalendarEventAction, CalendarEventTimesChangedEvent,
   CalendarView,
 } from 'angular-calendar';
-import { Subject } from 'rxjs';
-
-import { colors } from '../../utils/colors';
-import { EventEditorComponent } from '../event-editor/event-editor.component';
-import { INITIAL_EVENTS } from '../../utils/initial-events';
-import { StorageService } from '../../services/storage.service';
-import { PreferencesModel } from '../../models/preferences.model';
-import { TaskModel } from '../../models/task.model';
+import { Subject, Subscription } from 'rxjs';
 import {
-  addHours, isAfter,
+  addHours, addMinutes, isAfter,
   isSameDay,
   isSameMonth,
   isToday,
   startOfDay,
 } from 'date-fns';
 
+import { colors } from '../../utils/colors';
+import { EventEditorComponent } from '../event-editor/event-editor.component';
+import { StorageService } from '../../services/storage.service';
+import { PreferencesModel } from '../../models/preferences.model';
+import { TaskModel } from '../../models/task.model';
+import { BDMetaData } from '../../models/bd-metadata.model';
+
 @Component({
   selector: 'app-timetracker-container',
   templateUrl: './container.component.html',
   styleUrls: ['./container.component.scss'],
 })
-export class ContainerComponent {
+export class ContainerComponent implements OnDestroy {
   viewDate: Date = new Date();
   view: CalendarView = CalendarView.Month;
   activeDayIsOpen = true;
   refresh: Subject<any> = new Subject();
-  prefs: PreferencesModel;
+  prefsEvent: Subscription;
+  prefs: PreferencesModel = {
+    project: '',
+    hours: 1,
+    task: null as unknown as TaskModel,
+    focalPoint: '',
+  };
 
   editAction: CalendarEventAction = {
     label: '<i class="fas fa-fw fa-pencil-alt"></i>',
@@ -58,28 +64,36 @@ export class ContainerComponent {
     this.deleteAction,
   ];
 
-  events = INITIAL_EVENTS.map(e => {
-    e.actions = [];
-    return e;
-  });
+  events: CalendarEvent<BDMetaData>[] = [];
 
   constructor(
     public dialog: MatDialog,
-    private readonly storage: StorageService
-    ) {
+    private readonly storage: StorageService,
+  ) {
     const todayEvents = this.events.filter(e => isSameMonth(e.start, this.viewDate) && isSameDay(this.viewDate, e.start));
 
     if (todayEvents.length === 0) {
       this.activeDayIsOpen = false;
     }
 
+    this.readPrefs();
+
+    this.prefsEvent = this.storage.storing$.subscribe(storing => {
+      if (storing) {
+        this.readPrefs();
+      }
+    });
+  }
+
+  public ngOnDestroy(): void {
+    this.prefsEvent.unsubscribe();
+  }
+
+  private readPrefs(): void {
     const preferences = this.storage.get('preferences');
-    this.prefs = preferences ? JSON.parse(preferences) as PreferencesModel : {
-      project: '',
-      hours: 1,
-      task: null as unknown as TaskModel,
-      focalPoint: '',
-    };
+    if (preferences) {
+      this.prefs = JSON.parse(preferences);
+    }
   }
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
@@ -105,10 +119,7 @@ export class ContainerComponent {
           ...event,
           start: newStart,
           end: newEnd,
-          meta: {
-            task: this.prefs.task,
-            project: this.prefs.project,
-          },
+          meta: this.prefs,
         };
       }
       return iEvent;
@@ -139,17 +150,15 @@ export class ContainerComponent {
           beforeStart: true,
           afterEnd: true,
         },
-        meta: {
-          task: this.prefs.task,
-          project: this.prefs.project,
-        },
+        meta: this.prefs,
       },
       ...this.events,
     ];
   }
 
   public getLastUsedHour(date: Date): Date {
-    let last = startOfDay(this.viewDate);
+    let last = this.viewDate;
+    last.setHours(8, 0, 0);
 
     this.events.forEach(e => {
       if (isToday(e.start) && isAfter(last, e.start)) {
@@ -172,18 +181,17 @@ export class ContainerComponent {
         beforeStart: true,
         afterEnd: true,
       },
-      meta: {
-        task: this.prefs.task,
-        project: this.prefs.project,
-      },
+      meta: this.prefs,
     };
     const dialogRef = this.dialog.open(EventEditorComponent, {
       width: '500px',
       data: { event, action: 'Double click' },
     });
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: CalendarEvent<BDMetaData>) => {
       if (result) {
-        this.events = [...this.events, event];
+        result.end = addMinutes(result.start, (result.meta?.hours ?? this.prefs.hours) * 60);
+        this.events = [...this.events, result];
+        console.log(this.events);
         this.createEvent();
       }
     });

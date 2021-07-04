@@ -1,40 +1,27 @@
 import {
   Component,
-  Inject,
+  Inject, Injector,
   OnInit,
 } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, FormGroup } from '@angular/forms';
 
 import { PreferencesModel } from '../../models/preferences.model';
-import { TimeTrackerService } from '../../services/timetracker.service';
 import { Category } from '../../enums/category.enum';
+import { HasFormComponent } from '../has-form.component';
 
 @Component({
   selector: 'app-preferences',
   templateUrl: './preferences.component.html',
   styleUrls: ['./preferences.component.scss'],
 })
-export class PreferencesComponent implements OnInit {
-
-  projects: string[] = [];
-  focals: string[] = [];
-  tasks: string[] = [];
-  categories: string[] = [];
-
-  form = new FormGroup({
-    project: new FormControl(),
-    hours: new FormControl(),
-    task: new FormControl(),
-    category: new FormControl(),
-    focalPoint: new FormControl(),
-  });
+export class PreferencesComponent extends HasFormComponent implements OnInit {
 
   constructor(
+    public injector: Injector,
     public dialogRef: MatDialogRef<PreferencesComponent>,
     @Inject(MAT_DIALOG_DATA) public data: PreferencesModel,
-    private readonly timeTrackerService: TimeTrackerService,
   ) {
+    super(injector);
   }
 
   onNoClick(): void {
@@ -42,9 +29,7 @@ export class PreferencesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.timeTrackerService.getProjects().then(p => this.projects = p);
-    this.categories = Object.keys(Category)
-      .map(key => Category[key as keyof typeof Category]);
+    super.ngOnInit();
     this.getFocals(this.data.project);
     this.getTasks(this.data.task?.category);
     this.form.patchValue({
@@ -54,27 +39,5 @@ export class PreferencesComponent implements OnInit {
       category: this.data.task?.category as Category,
       focalPoint: this.data.focalPoint,
     });
-  }
-
-  getFocals(project: string): void {
-    this.timeTrackerService.getFocalPoints(project)
-      .then(f => this.focals = f);
-  }
-
-  getTasks(category: string): void {
-    this.timeTrackerService.getTasks(category as Category)
-      .then(t => this.tasks = t.map(m => m.name));
-  }
-
-  getPreferencesModel(): PreferencesModel {
-    return {
-      project: this.form.value.project,
-      hours: this.form.value.hours,
-      task: {
-        category: this.form.value.category as Category,
-        name: this.form.value.task,
-      },
-      focalPoint: this.form.value.focalPoint,
-    };
   }
 }

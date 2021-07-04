@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
   title = 'TimeTracker';
   isAuthenticated = false;
   toggleControl = new FormControl(false);
-  data: PreferencesModel;
+  prefs: PreferencesModel;
 
   @HostBinding('class') className = '';
 
@@ -37,7 +37,7 @@ export class AppComponent implements OnInit {
       },
     );
     const preferences = this.storage.get('preferences');
-    this.data = preferences ? JSON.parse(preferences) as PreferencesModel : {
+    this.prefs = preferences ? JSON.parse(preferences) as PreferencesModel : {
       project: '',
       hours: 1,
       task: null as unknown as TaskModel,
@@ -74,12 +74,12 @@ export class AppComponent implements OnInit {
   openPrefs(): void {
     const dialogRef = this.dialog.open(PreferencesComponent, {
       width: '500px',
-      data: this.data,
+      data: this.prefs,
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (this.isPreferencesModel(result)) {
-        this.data = result;
+        this.prefs = result;
         this.storage.set('preferences', JSON.stringify(result));
       }
     });

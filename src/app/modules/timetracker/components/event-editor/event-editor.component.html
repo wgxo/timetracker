@@ -1,67 +1,79 @@
 <h1 mat-dialog-title>Track your hours</h1>
 <div mat-dialog-content>
-    <div fxLayout="column" fxLayoutGap="8px" fxLayoutAlign="start stretch">
-        <mat-form-field appearance="fill">
-            <mat-label><label for="desc">Details</label></mat-label>
-            <input matInput #desc (focus)="desc.select()"
-                   id="desc"
-                   [autofocus]="true"
-                   (keyup)="$event.key === 'Enter' && dialogRef.close(data.event)"
-                   cdkfocusinitial
-                   [(ngModel)]="data.event.title"
-                   placeholder="Not set">
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-            <mat-label><label for="hours">Hours</label></mat-label>
-            <input matInput [value]="'1'"
-                   id="hours"
-                   (keyup)="$event.key === 'Enter' && dialogRef.close(data.event)"
-            >
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-            <mat-label><label for="proj">Project</label></mat-label>
-            <input matInput [value]="data.event.meta?.project"
-                   id="proj">
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-            <mat-label><label for="cat">Task category</label></mat-label>
-            <input matInput [value]="data.event.meta?.task?.category"
-                   id="cat">
-        </mat-form-field>
-        <mat-form-field appearance="fill">
-            <mat-label><label for="task">Task name</label></mat-label>
-            <input matInput [value]="data.event.meta?.task?.name"
-                   id="task">
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label><label for="date">Date</label></mat-label>
-            <input matInput [ngxMatDatetimePicker]="picker"
-                   placeholder="Choose a date"
-                   [(ngModel)]="data.event.start"
-                   [min]="minDate" [max]="maxDate"
-                   id="date">
-            <mat-datepicker-toggle matSuffix [for]="$any(picker)">
-            </mat-datepicker-toggle>
-            <ngx-mat-datetime-picker #picker
-                                     [showSpinners]="true"
-                                     [showSeconds]="false"
-                                     [touchUi]="true">
-            </ngx-mat-datetime-picker>
-        </mat-form-field>
-        <!--        <mat-form-field appearance="fill">-->
-        <!--            <mat-label>Date</mat-label>-->
-        <!--            <input matInput-->
-        <!--                   (click)="picker1.open()"-->
-        <!--                   [ngxMatDatetimePicker]="picker1"-->
-        <!--                   [(ngModel)]="data.event.start"-->
-        <!--                   placeholder="Not set"-->
-        <!--            />-->
-        <!--            <mat-datepicker-toggle matSuffix [for]="$any(picker1)"></mat-datepicker-toggle>-->
-        <!--            <ngx-mat-datetime-picker #picker1>-->
-        <!--            </ngx-mat-datetime-picker>-->
-        <!--        </mat-form-field>-->
-    </div>
+    <form [formGroup]="form">
+        <div fxLayout="column" fxLayoutGap="8px" fxLayoutAlign="start stretch">
+            <mat-form-field appearance="fill">
+                <mat-label><label for="desc">Details</label></mat-label>
+                <input matInput #desc (focus)="desc.select()"
+                       id="desc"
+                       [autofocus]="true"
+                       (keyup)="submitForm($event)"
+                       cdkfocusinitial
+                       formControlName="title"
+                       placeholder="Not set">
+            </mat-form-field>
 
+            <mat-form-field appearance="fill">
+                <mat-label><label for="hours">Hours</label></mat-label>
+                <input matInput formControlName="hours"
+                       id="hours"
+                       (keyup)="submitForm($event)"
+                >
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Project</mat-label>
+                <mat-select formControlName="project" (valueChange)="getFocals($event)">
+                    <mat-option *ngFor="let project of projects" [value]="project">
+                        {{ project }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Task Category</mat-label>
+                <mat-select formControlName="category" (valueChange)="getTasks($event)">
+                    <mat-option *ngFor="let category of categories" [value]="category">
+                        {{ category }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Task Name</mat-label>
+                <mat-select formControlName="task">
+                    <mat-option *ngFor="let task of tasks" [value]="task">
+                        {{ task }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label><label for="date">Date</label></mat-label>
+                <input matInput [ngxMatDatetimePicker]="picker"
+                       placeholder="Choose a date"
+                       formControlName="start"
+                       [min]="minDate" [max]="maxDate"
+                       id="date">
+                <mat-datepicker-toggle matSuffix [for]="$any(picker)">
+                </mat-datepicker-toggle>
+                <ngx-mat-datetime-picker #picker
+                                         [showSpinners]="true"
+                                         [showSeconds]="false"
+                                         [touchUi]="true">
+                </ngx-mat-datetime-picker>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Focal point</mat-label>
+                <mat-select formControlName="focalPoint">
+                    <mat-option *ngFor="let focal of focals" [value]="focal">
+                        {{ focal }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </form>
 </div>
 <div mat-dialog-actions>
     <button mat-button (click)="onNoClick()">Cancel</button>

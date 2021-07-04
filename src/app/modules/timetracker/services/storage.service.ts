@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StorageService {
+
+  public storing$ = new BehaviorSubject<boolean>(false);
 
   constructor() {
   }
@@ -11,6 +14,7 @@ export class StorageService {
   set(key: string, data: any): void {
     try {
       localStorage.setItem(key, JSON.stringify(data));
+      this.storing$.next(true);
     } catch (e) {
     }
   }
