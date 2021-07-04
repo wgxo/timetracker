@@ -7,6 +7,8 @@ import { endOfMonth, startOfMonth } from 'date-fns';
 import { EventData } from '../../models/event-data.model';
 import { Category } from '../../enums/category.enum';
 import { HasFormComponent } from '../has-form.component';
+import { BDMetaData } from '../../models/bd-metadata.model';
+import { CalendarEvent } from 'angular-calendar';
 
 @Component({
   selector: 'app-event-editor',
@@ -56,9 +58,20 @@ export class EventEditorComponent extends HasFormComponent implements OnInit {
     });
   }
 
-  public submitForm($event: KeyboardEvent): void {
-    if ($event.key === 'Enter') {
-      this.dialogRef.close(this.data.event);
+  public submitForm($event: KeyboardEvent | null): void {
+    if ($event === null || $event.key === 'Enter') {
+      this.dialogRef.close({
+        ...this.form.value,
+        meta: {
+          hours: this.form.value.hours,
+          project: this.form.value.project,
+          focalPoint: this.form.value.focalPoint,
+          task: {
+            name: this.form.value.task,
+            category: this.form.value.category,
+          },
+        },
+      } as CalendarEvent<BDMetaData>);
     }
   }
 }

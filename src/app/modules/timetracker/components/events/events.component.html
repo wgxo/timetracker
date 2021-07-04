@@ -45,7 +45,7 @@
                                 </ngx-mat-datetime-picker>
                             </mat-form-field>
                         </td>
-                        <td width="100">
+                        <td>
                             <mat-form-field appearance="fill">
                                 <mat-label>Hours</mat-label>
                                 <input matInput [value]="calcDuration(event)" readonly>
@@ -65,7 +65,7 @@
                         </td>
                         <td>
                             <mat-form-field appearance="fill">
-                                <mat-label>Assignment type</mat-label>
+                                <mat-label>Task Description</mat-label>
                                 <input placeholder="Not set" matInput [(ngModel)]="event.title"
                                        (keyup)="refresh.next()">
                             </mat-form-field>

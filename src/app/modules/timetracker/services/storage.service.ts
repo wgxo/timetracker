@@ -19,11 +19,19 @@ export class StorageService {
     }
   }
 
-  get(key: string): string | null {
+  get<Type>(key: string): Type {
+    const dateFormat = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+
     try {
-      return JSON.parse(localStorage.getItem(key) as string);
+      return JSON.parse(localStorage.getItem(key) ?? '', (k, value) => {
+        if (typeof value === 'string' && dateFormat.test(value)) {
+          return new Date(value);
+        }
+
+        return value;
+      }) as Type;
     } catch (e) {
-      return null;
+      return null as unknown as Type;
     }
   }
 }

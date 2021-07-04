@@ -1,4 +1,10 @@
-import { Component, HostBinding, Inject, OnInit } from '@angular/core';
+import {
+  Component,
+  HostBinding,
+  Inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
@@ -9,40 +15,56 @@ import { PreferencesModel } from './modules/timetracker/models/preferences.model
 import { StorageService } from './modules/timetracker/services/storage.service';
 import { TaskModel } from './modules/timetracker/models/task.model';
 import { DOCUMENT } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'TimeTracker';
   isAuthenticated = false;
   toggleControl = new FormControl(false);
-  prefs: PreferencesModel;
+  prefsEvent: Subscription;
+  prefs: PreferencesModel = {
+    project: '',
+    hours: 1,
+    task: null as unknown as TaskModel,
+    focalPoint: '',
+  };
 
   @HostBinding('class') className = '';
 
   constructor(public authService: AuthService,
               private overlay: OverlayContainer,
-              @Inject(DOCUMENT) private readonly _document: Document,
+              @Inject(DOCUMENT) private readonly document: Document,
               public dialog: MatDialog,
               private storage: StorageService) {
     this.authService.isAuthenticated.subscribe(
       (isAuthenticated: boolean) => {
         this.isAuthenticated = isAuthenticated;
-        if (this.storage.get('preferences') === null) {
-          this.openPrefs();
-        }
       },
     );
-    const preferences = this.storage.get('preferences');
-    this.prefs = preferences ? JSON.parse(preferences) as PreferencesModel : {
-      project: '',
-      hours: 1,
-      task: null as unknown as TaskModel,
-      focalPoint: '',
-    };
+
+    this.readPrefs();
+
+    this.prefsEvent = this.storage.storing$.subscribe(storing => {
+      if (storing) {
+        this.readPrefs();
+      }
+    });
+  }
+
+  public ngOnDestroy(): void {
+    this.prefsEvent.unsubscribe();
+  }
+
+  private readPrefs(): void {
+    const preferences = this.storage.get<PreferencesModel>('preferences');
+    if (preferences) {
+      this.prefs = preferences;
+    }
   }
 
   async ngOnInit(): Promise<void> {
@@ -51,7 +73,7 @@ export class AppComponent implements OnInit {
     this.toggleControl.valueChanges.subscribe((darkMode) => {
       const darkClassName = 'darkMode';
       this.className = darkMode ? darkClassName : '';
-      const body = this._document.getElementsByTagName('body')[0];
+      const body = this.document.getElementsByTagName('body')[0];
       if (darkMode) {
         body.classList.add(darkClassName);
         this.overlay.getContainerElement().classList.add(darkClassName);
@@ -60,6 +82,10 @@ export class AppComponent implements OnInit {
         this.overlay.getContainerElement().classList.remove(darkClassName);
       }
     });
+
+    if (this.storage.get('preferences') === null) {
+      this.openPrefs();
+    }
   }
 
   async logout(): Promise<void> {
@@ -80,7 +106,7 @@ export class AppComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (this.isPreferencesModel(result)) {
         this.prefs = result;
-        this.storage.set('preferences', JSON.stringify(result));
+        this.storage.set('preferences', result);
       }
     });
   }

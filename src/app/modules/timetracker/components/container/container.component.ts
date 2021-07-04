@@ -1,5 +1,5 @@
 import {
-  Component, OnDestroy,
+  Component, OnDestroy, OnInit,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -29,12 +29,12 @@ import { BDMetaData } from '../../models/bd-metadata.model';
   templateUrl: './container.component.html',
   styleUrls: ['./container.component.scss'],
 })
-export class ContainerComponent implements OnDestroy {
+export class ContainerComponent implements OnInit, OnDestroy {
   viewDate: Date = new Date();
   view: CalendarView = CalendarView.Month;
   activeDayIsOpen = true;
   refresh: Subject<any> = new Subject();
-  prefsEvent: Subscription;
+  prefsEvent = new Subscription();
   prefs: PreferencesModel = {
     project: '',
     hours: 1,
@@ -70,13 +70,17 @@ export class ContainerComponent implements OnDestroy {
     public dialog: MatDialog,
     private readonly storage: StorageService,
   ) {
+  }
+
+  public ngOnInit(): void {
+    this.readPrefs();
+    this.readEvents();
+
     const todayEvents = this.events.filter(e => isSameMonth(e.start, this.viewDate) && isSameDay(this.viewDate, e.start));
 
     if (todayEvents.length === 0) {
       this.activeDayIsOpen = false;
     }
-
-    this.readPrefs();
 
     this.prefsEvent = this.storage.storing$.subscribe(storing => {
       if (storing) {
@@ -89,10 +93,17 @@ export class ContainerComponent implements OnDestroy {
     this.prefsEvent.unsubscribe();
   }
 
+  private readEvents(): void {
+    const evs = this.storage.get<CalendarEvent<BDMetaData>[]>('events');
+    if (evs) {
+      this.events = evs;
+    }
+  }
+
   private readPrefs(): void {
-    const preferences = this.storage.get('preferences');
+    const preferences = this.storage.get<PreferencesModel>('preferences');
     if (preferences) {
-      this.prefs = JSON.parse(preferences);
+      this.prefs = preferences;
     }
   }
 
@@ -157,12 +168,12 @@ export class ContainerComponent implements OnDestroy {
   }
 
   public getLastUsedHour(date: Date): Date {
-    let last = this.viewDate;
-    last.setHours(8, 0, 0);
+    date.setHours(8, 0, 0);
+    let last = date;
 
     this.events.forEach(e => {
-      if (isToday(e.start) && isAfter(last, e.start)) {
-        last = e.start;
+      if (isSameDay(last, e.start) && isAfter(e.end ?? e.start, last)) {
+        last = e.end ?? e.start;
       }
     });
 
@@ -174,13 +185,6 @@ export class ContainerComponent implements OnDestroy {
       title: 'New task',
       start: this.getLastUsedHour(this.viewDate),
       end: addHours(this.viewDate, this.prefs.hours),
-      color: colors.blue,
-      actions: this.actions,
-      draggable: true,
-      resizable: {
-        beforeStart: true,
-        afterEnd: true,
-      },
       meta: this.prefs,
     };
     const dialogRef = this.dialog.open(EventEditorComponent, {
@@ -190,8 +194,18 @@ export class ContainerComponent implements OnDestroy {
     dialogRef.afterClosed().subscribe((result: CalendarEvent<BDMetaData>) => {
       if (result) {
         result.end = addMinutes(result.start, (result.meta?.hours ?? this.prefs.hours) * 60);
+        result = {
+          ...result,
+          color: colors.blue,
+          actions: this.actions,
+          draggable: true,
+          resizable: {
+            beforeStart: true,
+            afterEnd: true,
+          },
+        };
         this.events = [...this.events, result];
-        console.log(this.events);
+        this.storage.set('events', this.events);
         this.createEvent();
       }
     });
