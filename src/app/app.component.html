@@ -24,7 +24,7 @@
             </mat-slide-toggle>
             <mat-icon title="Dark mode">bedtime</mat-icon>
         </div>
-        <button mat-button (click)="openPrefs()" title="Preferences">
+        <button mat-button (click)="openPrefs()" title="Preferences" *ngIf="isAuthenticated">
             <mat-icon>settings</mat-icon>
         </button>
     </div>
@@ -45,7 +45,7 @@
         <mat-icon>edit_calendar</mat-icon>
         Track hours
     </button>
-    <button mat-menu-item (click)="openPrefs()">
+    <button mat-menu-item (click)="openPrefs()" *ngIf="isAuthenticated">
         <mat-icon>settings</mat-icon>
         Preferences
     </button>

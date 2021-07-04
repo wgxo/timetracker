@@ -83,7 +83,7 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     });
 
-    if (this.storage.get('preferences') === null) {
+    if (this.isAuthenticated && this.storage.get('preferences') === null) {
       this.openPrefs();
     }
   }

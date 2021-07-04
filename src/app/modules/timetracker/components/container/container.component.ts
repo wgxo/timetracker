@@ -23,7 +23,6 @@ import { colors, EventColor } from '../../utils/colors';
 import { EventEditorComponent } from '../event-editor/event-editor.component';
 import { StorageService } from '../../services/storage.service';
 import { PreferencesModel } from '../../models/preferences.model';
-import { TaskModel } from '../../models/task.model';
 import { BDMetaData } from '../../models/bd-metadata.model';
 import { Category } from '../../enums/category.enum';
 import { EventData } from '../../models/event-data.model';
@@ -42,7 +41,10 @@ export class ContainerComponent implements OnInit, OnDestroy {
   prefs: PreferencesModel = {
     project: '',
     hours: 1,
-    task: null as unknown as TaskModel,
+    task: {
+      category: Category.OTHER,
+      name: 'Other',
+    },
     focalPoint: '',
   };
 
