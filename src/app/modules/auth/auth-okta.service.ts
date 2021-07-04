@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
+
+import { BehaviorSubject } from 'rxjs';
 import { OktaAuth } from '@okta/okta-auth-js';
 
+import { AuthBaseService } from './base.service';
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class AuthService {
+export class AuthOktaService implements AuthBaseService {
   private authClient = new OktaAuth({
     issuer: 'https://dev-2103550.okta.com/oauth2/default',
-    clientId: '0oa11xnikrjvAgb1F5d7'
+    clientId: '0oa11xnikrjvAgb1F5d7',
   });
 
   public isAuthenticated = new BehaviorSubject<boolean>(false);
@@ -24,7 +27,7 @@ export class AuthService {
   }
 
   async login(username: string, password: string): Promise<void> {
-    const transaction = await this.authClient.signIn({username, password});
+    const transaction = await this.authClient.signIn({ username, password });
 
     if (transaction.status !== 'SUCCESS') {
       throw Error('We cannot handle the ' + transaction.status + ' status');

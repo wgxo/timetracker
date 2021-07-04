@@ -4,11 +4,6 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 
 import {
-  addHours,
-  isSameDay, isSameMonth,
-  startOfDay,
-} from 'date-fns';
-import {
   CalendarEvent,
   CalendarEventAction, CalendarEventTimesChangedEvent,
   CalendarView,
@@ -21,6 +16,13 @@ import { INITIAL_EVENTS } from '../../utils/initial-events';
 import { StorageService } from '../../services/storage.service';
 import { PreferencesModel } from '../../models/preferences.model';
 import { TaskModel } from '../../models/task.model';
+import {
+  addHours, isAfter,
+  isSameDay,
+  isSameMonth,
+  isToday,
+  startOfDay,
+} from 'date-fns';
 
 @Component({
   selector: 'app-timetracker-container',
@@ -146,10 +148,22 @@ export class ContainerComponent {
     ];
   }
 
+  public getLastUsedHour(date: Date): Date {
+    let last = startOfDay(this.viewDate);
+
+    this.events.forEach(e => {
+      if (isToday(e.start) && isAfter(last, e.start)) {
+        last = e.start;
+      }
+    });
+
+    return last;
+  }
+
   public createEvent(): void {
-    const event = {
+    const event: CalendarEvent = {
       title: 'New task',
-      start: startOfDay(this.viewDate),
+      start: this.getLastUsedHour(this.viewDate),
       end: addHours(this.viewDate, this.prefs.hours),
       color: colors.blue,
       actions: this.actions,

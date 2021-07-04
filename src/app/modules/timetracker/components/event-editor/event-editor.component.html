@@ -1,45 +1,65 @@
 <h1 mat-dialog-title>Track your hours</h1>
 <div mat-dialog-content>
-    <div fxLayout="column" fxlayoutGap="8px" fxLayoutAlign="start stretch">
+    <div fxLayout="column" fxLayoutGap="8px" fxLayoutAlign="start stretch">
         <mat-form-field appearance="fill">
-            <mat-label>Task Description</mat-label>
+            <mat-label><label for="desc">Details</label></mat-label>
             <input matInput #desc (focus)="desc.select()"
-                      [autofocus]="true"
-                      (keyup)="$event.key === 'Enter' && dialogRef.close(data.event)"
-                      cdkfocusinitial
-                      [(ngModel)]="data.event.title"
-                      placeholder="Not set">
+                   id="desc"
+                   [autofocus]="true"
+                   (keyup)="$event.key === 'Enter' && dialogRef.close(data.event)"
+                   cdkfocusinitial
+                   [(ngModel)]="data.event.title"
+                   placeholder="Not set">
         </mat-form-field>
         <mat-form-field appearance="fill">
-            <mat-label>Hours</mat-label>
+            <mat-label><label for="hours">Hours</label></mat-label>
             <input matInput [value]="'1'"
+                   id="hours"
                    (keyup)="$event.key === 'Enter' && dialogRef.close(data.event)"
             >
         </mat-form-field>
         <mat-form-field appearance="fill">
-            <mat-label>Project</mat-label>
-            <input matInput [value]="data.event.meta?.project">
+            <mat-label><label for="proj">Project</label></mat-label>
+            <input matInput [value]="data.event.meta?.project"
+                   id="proj">
         </mat-form-field>
         <mat-form-field appearance="fill">
-            <mat-label>Task category</mat-label>
-            <input matInput [value]="data.event.meta?.task?.category">
+            <mat-label><label for="cat">Task category</label></mat-label>
+            <input matInput [value]="data.event.meta?.task?.category"
+                   id="cat">
         </mat-form-field>
         <mat-form-field appearance="fill">
-            <mat-label>Task description</mat-label>
-            <input matInput [value]="data.event.meta?.task?.name">
+            <mat-label><label for="task">Task name</label></mat-label>
+            <input matInput [value]="data.event.meta?.task?.name"
+                   id="task">
         </mat-form-field>
-        <mat-form-field appearance="fill">
-            <mat-label>Date</mat-label>
-            <input matInput
-                   (click)="picker1.open()"
-                   [ngxMatDatetimePicker]="picker1"
+        <mat-form-field>
+            <mat-label><label for="date">Date</label></mat-label>
+            <input matInput [ngxMatDatetimePicker]="picker"
+                   placeholder="Choose a date"
                    [(ngModel)]="data.event.start"
-                   placeholder="Not set"
-            />
-            <mat-datepicker-toggle matSuffix [for]="$any(picker1)"></mat-datepicker-toggle>
-            <ngx-mat-datetime-picker #picker1>
+                   [min]="minDate" [max]="maxDate"
+                   id="date">
+            <mat-datepicker-toggle matSuffix [for]="$any(picker)">
+            </mat-datepicker-toggle>
+            <ngx-mat-datetime-picker #picker
+                                     [showSpinners]="true"
+                                     [showSeconds]="false"
+                                     [touchUi]="true">
             </ngx-mat-datetime-picker>
         </mat-form-field>
+        <!--        <mat-form-field appearance="fill">-->
+        <!--            <mat-label>Date</mat-label>-->
+        <!--            <input matInput-->
+        <!--                   (click)="picker1.open()"-->
+        <!--                   [ngxMatDatetimePicker]="picker1"-->
+        <!--                   [(ngModel)]="data.event.start"-->
+        <!--                   placeholder="Not set"-->
+        <!--            />-->
+        <!--            <mat-datepicker-toggle matSuffix [for]="$any(picker1)"></mat-datepicker-toggle>-->
+        <!--            <ngx-mat-datetime-picker #picker1>-->
+        <!--            </ngx-mat-datetime-picker>-->
+        <!--        </mat-form-field>-->
     </div>
 
 </div>

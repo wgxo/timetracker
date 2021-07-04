@@ -1,1 +1,26 @@
 @import 'app/styles/theme';
+
+.darkMode {
+  @include angular-material-theme($dark-theme);
+
+  .container {
+    background-color: $custom-background-color !important;
+  }
+
+  h1 {
+    color: white;
+  }
+
+  h1.hero {
+    color: orange !important;
+  }
+
+  p.hero {
+    color: white !important;
+  }
+
+  .mat-card {
+    background: map_get($mat-dark-theme-background, card) !important;
+    color: map_get($mat-dark-theme-foreground, text) !important;
+  }
+}

@@ -1,13 +1,14 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding, Inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
-import { AuthService } from './auth.service';
+import { AuthService } from './modules/auth/auth.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PreferencesComponent } from './modules/timetracker/components/preferences/preferences.component';
 import { PreferencesModel } from './modules/timetracker/models/preferences.model';
 import { StorageService } from './modules/timetracker/services/storage.service';
 import { TaskModel } from './modules/timetracker/models/task.model';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -24,10 +25,16 @@ export class AppComponent implements OnInit {
 
   constructor(public authService: AuthService,
               private overlay: OverlayContainer,
+              @Inject(DOCUMENT) private readonly _document: Document,
               public dialog: MatDialog,
               private storage: StorageService) {
     this.authService.isAuthenticated.subscribe(
-      (isAuthenticated: boolean) => this.isAuthenticated = isAuthenticated,
+      (isAuthenticated: boolean) => {
+        this.isAuthenticated = isAuthenticated;
+        if (this.storage.get('preferences') === null) {
+          this.openPrefs();
+        }
+      },
     );
     const preferences = this.storage.get('preferences');
     this.data = preferences ? JSON.parse(preferences) as PreferencesModel : {
@@ -44,16 +51,15 @@ export class AppComponent implements OnInit {
     this.toggleControl.valueChanges.subscribe((darkMode) => {
       const darkClassName = 'darkMode';
       this.className = darkMode ? darkClassName : '';
+      const body = this._document.getElementsByTagName('body')[0];
       if (darkMode) {
+        body.classList.add(darkClassName);
         this.overlay.getContainerElement().classList.add(darkClassName);
       } else {
+        body.classList.remove(darkClassName);
         this.overlay.getContainerElement().classList.remove(darkClassName);
       }
     });
-
-    if (this.storage.get('preferences') === null) {
-      this.openPrefs();
-    }
   }
 
   async logout(): Promise<void> {

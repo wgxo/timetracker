@@ -2,11 +2,9 @@ import {Component, Inject} from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 import { AngularEditorConfig } from '@kolkov/angular-editor';
+import { endOfMonth, startOfMonth } from 'date-fns';
 
 import { EventData } from '../../models/event-data.model';
-import { StorageService } from '../../services/storage.service';
-import { PreferencesModel } from '../../models/preferences.model';
-import { TaskModel } from '../../models/task.model';
 
 @Component({
   selector: 'app-event-editor',
@@ -33,6 +31,14 @@ export class EventEditorComponent {
     showToolbar: false,
     placeholder: 'Not set',
   };
+
+  get minDate(): Date {
+    return startOfMonth(this.data.event.start);
+  }
+
+  get maxDate(): Date {
+    return endOfMonth(this.data.event.start);
+  }
 
   onNoClick(): void {
     this.dialogRef.close();

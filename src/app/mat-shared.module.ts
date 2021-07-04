@@ -40,6 +40,7 @@ import {
   NgxMatNativeDateModule,
   NgxMatTimepickerModule
 } from '@angular-material-components/datetime-picker';
+import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
 
 const materialModules = [
   CdkTreeModule,
@@ -77,6 +78,7 @@ const materialModules = [
   NgxMatDatetimePickerModule,
   NgxMatNativeDateModule,
   NgxMatTimepickerModule,
+  NgxMatMomentModule,
   MatDialogModule,
   MatSlideToggleModule,
 ];

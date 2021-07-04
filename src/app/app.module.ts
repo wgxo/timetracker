@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { MatSharedModule } from './mat-shared.module';
+import { CustomHttpModule } from './modules/http/custom-http.module';
 
 const SHARED_MODULES = [
   FlexLayoutModule,
@@ -17,13 +18,14 @@ const SHARED_MODULES = [
   ReactiveFormsModule,
   CommonModule,
   MatSharedModule,
+  CustomHttpModule,
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    LoginComponent
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -32,7 +34,7 @@ const SHARED_MODULES = [
     ...SHARED_MODULES,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {
 }
