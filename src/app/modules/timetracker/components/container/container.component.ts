@@ -1,5 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { DOCUMENT } from '@angular/common';
 
 import {
   CalendarEvent,
@@ -9,13 +10,13 @@ import {
 } from 'angular-calendar';
 import { Subject, Subscription } from 'rxjs';
 import {
+  addDays,
   addHours,
   addMinutes,
   differenceInSeconds,
   isAfter,
   isSameDay,
   isSameMonth,
-  startOfDay,
 } from 'date-fns';
 
 import { colors, EventColor } from '../../utils/colors';
@@ -71,6 +72,7 @@ export class ContainerComponent implements OnInit, OnDestroy {
 
   constructor(
     public dialog: MatDialog,
+    @Inject(DOCUMENT) private readonly document: Document,
     private readonly storage: StorageService,
   ) {
   }
@@ -114,6 +116,16 @@ export class ContainerComponent implements OnInit, OnDestroy {
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     const oldDate = this.viewDate;
     this.viewDate = date;
+
+    const els = this.document.querySelectorAll('.cal-month-view .cal-day-cell.cal-in-month .cal-day-number');
+    els.forEach(e => {
+      if (Number(e.innerHTML) === this.viewDate.getDate()) {
+        e.closest('.cal-day-cell')?.classList.add('cal-active');
+      } else {
+        e.closest('.cal-day-cell')?.classList.remove('cal-active');
+      }
+    });
+
     if (isSameMonth(date, oldDate)) {
       if ((isSameDay(oldDate, date) && this.activeDayIsOpen) || events.length === 0) {
         this.activeDayIsOpen = false;
@@ -153,24 +165,6 @@ export class ContainerComponent implements OnInit, OnDestroy {
     this.events = this.events.filter((event) => event !== eventToDelete);
   }
 
-  addEvent(date: Date = new Date()): void {
-    this.events = [
-      {
-        title: 'New task',
-        start: startOfDay(date),
-        end: addHours(date, this.prefs.hours),
-        color: colors.blue,
-        draggable: true,
-        resizable: {
-          beforeStart: true,
-          afterEnd: true,
-        },
-        meta: this.prefs,
-      },
-      ...this.events,
-    ];
-  }
-
   public getLastUsedHour(date: Date): Date {
     date.setHours(8, 0, 0);
     let last = date;
@@ -206,7 +200,7 @@ export class ContainerComponent implements OnInit, OnDestroy {
     const event: CalendarEvent = {
       title: 'New task',
       start: this.getLastUsedHour(this.viewDate),
-      end: addHours(this.viewDate, this.prefs.hours),
+      end: addHours(this.getLastUsedHour(this.viewDate), this.prefs.hours),
       meta: this.prefs,
     };
     const dialogRef = this.dialog.open<EventEditorComponent, EventData, CalendarEvent<BDMetaData>>(
@@ -233,6 +227,9 @@ export class ContainerComponent implements OnInit, OnDestroy {
         };
         this.events = [...this.events, result];
         this.storage.set('events', this.events);
+        if (this.currentHours >= 8) {
+          this.viewDate = addDays(this.viewDate, 1);
+        }
         this.createEvent();
       }
     });

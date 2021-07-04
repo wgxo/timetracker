@@ -7,11 +7,18 @@
             </mat-panel-title>
             <mat-panel-description class="title">Total worked hours: {{ totalHours }}</mat-panel-description>
         </mat-expansion-panel-header>
-        <div>
-            <button mat-fab
+        <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="end" class="toolbar">
+            <button mat-flat-button
                     color="primary"
                     (click)="addEvent.emit()">
+                Add task
                 <mat-icon>add</mat-icon>
+            </button>
+            <button mat-flat-button
+                    color="primary"
+                    (click)="sendEvent.emit()">
+                Send report
+                <mat-icon>send</mat-icon>
             </button>
         </div>
         <div class="table-responsive">

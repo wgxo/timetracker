@@ -12,6 +12,7 @@ import { isSameMonth } from 'date-fns';
 })
 export class EventsComponent {
   @Output() addEvent = new EventEmitter<string>();
+  @Output() sendEvent = new EventEmitter<string>();
   @Input() events: CalendarEvent<BDMetaData>[] = [];
   @Input() refresh = new Subject<any>();
   @Output() deleteEvent = new EventEmitter<CalendarEvent<BDMetaData>>();
