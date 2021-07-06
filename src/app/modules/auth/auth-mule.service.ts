@@ -42,7 +42,7 @@ export class AuthMuleService implements AuthBaseService {
       responseType: 'json',
     }).pipe(first(), map(r => r)).toPromise();
 
-    if (result.status !== 201 || !result.body?.success) {
+    if (result.status !== 201 || !result.body) {
       throw new Error('Unable to authenticate user');
     }
 
