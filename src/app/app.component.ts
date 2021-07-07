@@ -104,7 +104,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   openPrefs(): void {
     const dialogRef = this.dialog.open<PreferencesComponent, PreferencesModel[], PreferencesModel[]>(PreferencesComponent, {
-      width: '500px',
+      width: '580px',
       data: this.prefs,
     });
 
