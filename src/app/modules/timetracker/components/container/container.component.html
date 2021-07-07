@@ -1,6 +1,9 @@
 <app-time-navigator
+        [(minHour)]="minHour"
+        [(maxHour)]="maxHour"
         [(view)]="view"
         [(viewDate)]="viewDate"
+        (toggleDays)="toggleDays()"
         locale="en"
 ></app-time-navigator>
 <app-calendar
@@ -10,6 +13,9 @@
         [(view)]="view"
         [(viewDate)]="viewDate"
         [refresh]="refresh"
+        [excludeDays]="excludeDays"
+        [minHour]="minHour"
+        [maxHour]="maxHour"
         (doubleClick)="createEvent()"
         (dayClicked)="dayClicked($event)"
         (eventClicked)="handleEvent($event)"

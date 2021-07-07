@@ -2,6 +2,7 @@
     <div [ngSwitch]="view">
         <mwl-calendar-month-view
                 *ngSwitchCase="CalendarView.Month"
+                [excludeDays]="excludeDays"
                 [viewDate]="viewDate"
                 [events]="events"
                 [refresh]="refresh"
@@ -15,8 +16,9 @@
         </mwl-calendar-month-view>
         <mwl-calendar-week-view
                 *ngSwitchCase="CalendarView.Week"
-                [dayEndHour]="18"
-                [dayStartHour]="8"
+                [excludeDays]="excludeDays"
+                [dayEndHour]="maxHour"
+                [dayStartHour]="minHour"
                 [viewDate]="viewDate"
                 [events]="events"
                 [refresh]="refresh"
@@ -27,8 +29,8 @@
         </mwl-calendar-week-view>
         <mwl-calendar-day-view
                 *ngSwitchCase="CalendarView.Day"
-                [dayEndHour]="18"
-                [dayStartHour]="8"
+                [dayEndHour]="maxHour"
+                [dayStartHour]="minHour"
                 [viewDate]="viewDate"
                 [events]="events"
                 [refresh]="refresh"

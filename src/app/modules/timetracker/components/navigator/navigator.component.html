@@ -25,20 +25,32 @@
                                (viewDateChange)="viewDateChange.next(viewDate)">Next
             </mat-button-toggle>
         </mat-button-toggle-group>
-        <h1>Hours from {{ viewDate | calendarDate: (view + 'ViewTitle'):locale }}</h1>
-        <mat-button-toggle-group #viewGroup fxHide.xs
-                                 aria-label="Calendar View"
-                                 [value]="view"
-                                 (valueChange)="changeView($event)">
-            <mat-button-toggle value="month"
-                               [class.active]="view === CalendarView.Month">Month
-            </mat-button-toggle>
-            <mat-button-toggle value="week"
-                               [class.active]="view === CalendarView.Week">Week
-            </mat-button-toggle>
-            <mat-button-toggle value="day"
-                               [class.active]="view === CalendarView.Day">Day
-            </mat-button-toggle>
-        </mat-button-toggle-group>
+        <div fxLayout="column" fxLayoutGap="8px" fxLayoutAlign="center stretch">
+            <h1>Hours from {{ viewDate | calendarDate: (view + 'ViewTitle'):locale }}</h1>
+            <div class="custom-slider" *ngIf="view !== CalendarView.Month" fxFlex="1 1 100%">
+                <ngx-slider [(value)]="minHour" [(highValue)]="maxHour" [options]="options"
+                            (valueChange)="minHourChange.emit(minHour)"
+                            (highValueChange)="maxHourChange.emit(maxHour)"></ngx-slider>
+            </div>
+        </div>
+        <div fxLayoutAlign="stretch end" fxLayout="column" fxLayoutGap="8px">
+            <mat-button-toggle-group #viewGroup fxHide.xs
+                                     aria-label="Calendar View"
+                                     [value]="view"
+                                     (valueChange)="changeView($event)">
+                <mat-button-toggle value="month"
+                                   [class.active]="view === CalendarView.Month">Month
+                </mat-button-toggle>
+                <mat-button-toggle value="week"
+                                   [class.active]="view === CalendarView.Week">Week
+                </mat-button-toggle>
+                <mat-button-toggle value="day"
+                                   [class.active]="view === CalendarView.Day">Day
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+            <mat-slide-toggle color="primary" *ngIf="view !== CalendarView.Day"
+                              (change)="toggleDays.emit()">Show weekends
+            </mat-slide-toggle>
+        </div>
     </div>
 </div>

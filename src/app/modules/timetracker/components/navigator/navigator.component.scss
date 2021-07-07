@@ -13,3 +13,40 @@ mat-button-toggle-group {
 .nav-container {
   @extend .margin-16;
 }
+
+::ng-deep .custom-slider {
+  .ngx-slider {
+    .ngx-slider-bar {
+      background: #ffe4d1;
+      height: 2px;
+    }
+
+    .ngx-slider-selection {
+      background: orange;
+    }
+
+    .ngx-slider-pointer {
+      width: 8px;
+      height: 16px;
+      top: auto; /* to remove the default positioning */
+      bottom: 0;
+      background-color: #333;
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+    }
+
+    .ngx-slider-pointer:after {
+      display: none;
+    }
+
+    .ngx-slider-bubble {
+      bottom: 14px;
+      font-size: 0.75rem;
+    }
+
+    .ngx-slider-limit {
+      font-weight: bold;
+      color: orange;
+    }
+  }
+}

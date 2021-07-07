@@ -36,6 +36,9 @@ export class CalendarComponent implements AfterViewInit {
   @Output() dayClicked = new EventEmitter<CalendarMonthViewDay>();
   @Output() eventClicked = new EventEmitter<CalendarEvent>();
   @Output() eventTimesChanged = new EventEmitter<CalendarEventTimesChangedEvent>();
+  @Input() excludeDays: number[] = [0, 6];
+  @Input() minHour = 8;
+  @Input() maxHour = 17;
 
   CalendarView = CalendarView;
 
@@ -84,6 +87,7 @@ export class CalendarComponent implements AfterViewInit {
 
   public formatHours(event: CalendarEvent<BDMetaData>): string {
     const mins = hoursToMinutes(event.meta?.hours ?? 0);
-    return `${String(Math.floor(mins / 60)).padStart(2, '0')}:${String(mins % 60).padStart(2, '0')}`;
+    return `${String(Math.floor(mins / 60))
+      .padStart(2, '0')}:${String(mins % 60).padStart(2, '0')}`;
   }
 }

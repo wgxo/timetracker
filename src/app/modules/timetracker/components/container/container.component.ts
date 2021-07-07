@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DOCUMENT } from '@angular/common';
 
@@ -16,7 +16,7 @@ import {
   differenceInSeconds,
   isAfter,
   isSameDay,
-  isSameMonth,
+  isSameMonth, isSaturday, nextMonday, startOfDay,
 } from 'date-fns';
 
 import { colors, EventColor } from '../../utils/colors';
@@ -71,6 +71,9 @@ export class ContainerComponent implements OnInit, OnDestroy {
   ];
 
   events: CalendarEvent<BDMetaData>[] = [];
+  excludeDays: number[] = [0, 6];
+  minHour = 8;
+  maxHour = 18;
 
   constructor(
     public dialog: MatDialog,
@@ -169,7 +172,6 @@ export class ContainerComponent implements OnInit, OnDestroy {
         result = {
           ...result,
           color: this.getColor(result),
-          // actions: this.actions,
           draggable: true,
           resizable: {
             beforeStart: true,
@@ -240,7 +242,6 @@ export class ContainerComponent implements OnInit, OnDestroy {
         result = {
           ...result,
           color: this.getColor(result),
-          // actions: this.actions,
           draggable: true,
           resizable: {
             beforeStart: true,
@@ -252,7 +253,11 @@ export class ContainerComponent implements OnInit, OnDestroy {
 
         // move automatically to next day if daily hours are complete
         if (this.calcCurrentHours(this.viewDate) >= 8) {
-          this.viewDate = addDays(this.viewDate, 1);
+          let nextDay = startOfDay(addDays(this.viewDate, 1));
+          if (isSaturday(nextDay)) {
+            nextDay = nextMonday(nextDay);
+          }
+          this.viewDate = nextDay;
         }
         this.createEvent();
       }
@@ -284,5 +289,9 @@ export class ContainerComponent implements OnInit, OnDestroy {
         duration: 3000,
       });
     }
+  }
+
+  public toggleDays(): void {
+    this.excludeDays = this.excludeDays.length > 0 ? [] : [0, 6];
   }
 }

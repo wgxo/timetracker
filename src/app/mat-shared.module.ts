@@ -34,6 +34,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 
 import {
   NgxMatDatetimePickerModule,
@@ -81,6 +82,7 @@ const materialModules = [
   NgxMatMomentModule,
   MatDialogModule,
   MatSlideToggleModule,
+  NgxSliderModule,
 ];
 
 @NgModule({
