@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DOCUMENT } from '@angular/common';
 
@@ -16,7 +16,10 @@ import {
   differenceInSeconds,
   isAfter,
   isSameDay,
-  isSameMonth, isSaturday, nextMonday, startOfDay,
+  isSameMonth,
+  isSaturday,
+  nextMonday,
+  startOfDay,
 } from 'date-fns';
 
 import { colors, EventColor } from '../../utils/colors';
@@ -27,6 +30,7 @@ import { BDMetaData } from '../../models/bd-metadata.model';
 import { Category } from '../../enums/category.enum';
 import { EventData } from '../../models/event-data.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ReportComponent } from '../report/report.component';
 
 @Component({
   selector: 'app-timetracker-container',
@@ -202,6 +206,15 @@ export class ContainerComponent implements OnInit, OnDestroy {
     return last;
   }
 
+  public calcNotWorked(date: Date): number {
+    let total = 0.0;
+    this.events
+      .filter(e => isSameMonth(date, e.start) && e.meta?.task.category === Category.ABSENCE)
+      .forEach(e => total += Number(e.meta?.hours));
+
+    return total;
+  }
+
   public calcTotalHours(date: Date): number {
     let total = 0.0;
     this.events
@@ -293,5 +306,16 @@ export class ContainerComponent implements OnInit, OnDestroy {
 
   public toggleDays(): void {
     this.excludeDays = this.excludeDays.length > 0 ? [] : [0, 6];
+  }
+
+  public sendEvents(): void {
+    this.dialog.open(
+      ReportComponent, {
+        width: '640px',
+        data: {
+          totalHours: this.calcTotalHours(this.viewDate),
+          notWorked: this.calcNotWorked(this.viewDate)
+        },
+      });
   }
 }

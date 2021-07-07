@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>Export monthly hours report</h1>
+<div mat-dialog-content>
+    <angular-editor [config]="config" [(ngModel)]="htmlContent" #editor>
+    </angular-editor>
+</div>
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="end center">
+    <button mat-stroked-button (click)="copyToClipboard()">Copy to clipboard</button>
+    <button mat-stroked-button (click)="sendEmail()">Send Email</button>
+    <button mat-stroked-button mat-dialog-close cdkfocusinitial>Close</button>
+</div>

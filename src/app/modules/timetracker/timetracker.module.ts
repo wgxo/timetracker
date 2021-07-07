@@ -18,6 +18,7 @@ import { EventEditorComponent } from './components/event-editor/event-editor.com
 import { PreferencesComponent } from './components/preferences/preferences.component';
 import { HasFormComponent } from './components/has-form.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
+import { ReportComponent } from './components/report/report.component';
 
 const SHARED_MODULES = [
   FlexLayoutModule,
@@ -39,6 +40,7 @@ const SHARED_MODULES = [
     PreferencesComponent,
     HasFormComponent,
     WelcomeComponent,
+    ReportComponent,
   ],
   imports: [
     TimeTrackerRoutingModule,
