@@ -16,7 +16,7 @@ import { Subject } from 'rxjs';
 import { BDMetaData } from '../../models/bd-metadata.model';
 import { DialogData, WelcomeComponent } from '../welcome/welcome.component';
 import { StorageService } from '../../services/storage.service';
-import { hoursToMinutes } from 'date-fns';
+import { formatHours } from '../../utils/functions.utils';
 
 @Component({
   selector: 'app-calendar',
@@ -41,6 +41,7 @@ export class CalendarComponent implements AfterViewInit {
   @Input() maxHour = 17;
 
   CalendarView = CalendarView;
+  formatHours = formatHours;
 
   constructor(
     private readonly dialog: MatDialog,
@@ -85,9 +86,7 @@ export class CalendarComponent implements AfterViewInit {
     action.onClick({ event, sourceEvent: null as unknown as MouseEvent });
   }
 
-  public formatHours(event: CalendarEvent<BDMetaData>): string {
-    const mins = hoursToMinutes(event.meta?.hours ?? 0);
-    return `${String(Math.floor(mins / 60))
-      .padStart(2, '0')}:${String(mins % 60).padStart(2, '0')}`;
+  public formatEventHours(event: CalendarEvent<BDMetaData>): string {
+   return formatHours(event.meta?.hours ?? 0);
   }
 }

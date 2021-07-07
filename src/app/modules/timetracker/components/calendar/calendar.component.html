@@ -70,7 +70,7 @@
             </mwl-calendar-event-actions>
         </div>
         <div>
-            <b>Hours worked: {{ totalHours(events) }}</b>
+            <b>Hours worked: {{ formatHours(totalHours(events)) }}</b>
         </div>
     </div>
 </ng-template>
@@ -78,7 +78,7 @@
 <ng-template
     #eventTitleTemplate
     let-event="event">
-    {{ event.start | date:'HH:mm'}} - {{ event.title }} ({{formatHours(event)}})
+    {{ event.start | date:'HH:mm'}} - {{ event.title }} ({{formatEventHours(event)}})
 </ng-template>
 
 <ng-template

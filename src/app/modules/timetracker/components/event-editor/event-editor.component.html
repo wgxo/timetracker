@@ -1,6 +1,6 @@
 <div mat-dialog-title>
     <div class="title">Track your hours for {{data.event.start | date:'EEEE MMMM, dd'}}</div>
-    <div class="subtitle">Day total: {{ data.currentHours }} / Month total: {{ data.totalHours }}</div>
+    <div class="subtitle">Daily total: {{ formatHours(data.currentHours) }} / Monthly total: {{ formatHours(data.totalHours) }}</div>
 </div>
 
 <div mat-dialog-content>
@@ -19,7 +19,7 @@
 
             <mat-chip-list #chipList aria-label="Favorite selection">
                 <mat-chip
-                        (click)="loadFavorite(favorite)"
+                        (click)="loadFavorite(favorite); hours.select()"
                         *ngFor="let favorite of favorites"
                         [removable]="true"
                         (removed)="removeFavoriteChip(favorite)">
@@ -31,7 +31,7 @@
             <div fxLayout="row" fxLayoutGap="8px">
                 <mat-form-field appearance="fill" fxFlex="1 1 30%">
                     <mat-label><label for="hours">Hours</label></mat-label>
-                    <input matInput formControlName="hours"
+                    <input matInput formControlName="hours" #hours
                            id="hours"
                            (keyup)="submitForm($event)"
                     >

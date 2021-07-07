@@ -21,6 +21,7 @@ import { HasFormComponent } from '../has-form.component';
 import { BDMetaData } from '../../models/bd-metadata.model';
 import { StorageService } from '../../services/storage.service';
 import { FavoriteModel } from '../../models/favorite.model';
+import { formatHours } from '../../utils/functions.utils';
 
 @Component({
   selector: 'app-event-editor',
@@ -33,6 +34,8 @@ export class EventEditorComponent extends HasFormComponent implements OnInit {
   favoriteCtrl = new FormControl();
 
   @ViewChild('favoriteInput') favoriteInput!: ElementRef<HTMLInputElement>;
+
+  formatHours = formatHours;
 
   constructor(
     public injector: Injector,
