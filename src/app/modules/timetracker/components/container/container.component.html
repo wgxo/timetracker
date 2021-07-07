@@ -12,7 +12,7 @@
         [refresh]="refresh"
         (doubleClick)="createEvent()"
         (dayClicked)="dayClicked($event)"
-        (eventClicked)="handleEvent('Clicked', $event)"
+        (eventClicked)="handleEvent($event)"
         (eventTimesChanged)="eventTimesChanged($event)"
 ></app-calendar>
 <app-time-events [events]="sortedEvents"

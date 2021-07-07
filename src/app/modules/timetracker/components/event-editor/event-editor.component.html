@@ -1,5 +1,5 @@
 <div mat-dialog-title>
-    <div class="title">Track your hours for {{data.event.start | date:'MMMM, dd'}}</div>
+    <div class="title">Track your hours for {{data.event.start | date:'EEEE MMMM, dd'}}</div>
     <div class="subtitle">Day total: {{ data.currentHours }} / Month total: {{ data.totalHours }}</div>
 </div>
 
@@ -16,6 +16,17 @@
                        formControlName="title"
                        placeholder="Not set">
             </mat-form-field>
+
+            <mat-chip-list #chipList aria-label="Favorite selection">
+                <mat-chip
+                        (click)="loadFavorite(favorite)"
+                        *ngFor="let favorite of favorites"
+                        [removable]="true"
+                        (removed)="removeFavoriteChip(favorite)">
+                    {{favorite}}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+            </mat-chip-list>
 
             <div fxLayout="row" fxLayoutGap="8px">
                 <mat-form-field appearance="fill" fxFlex="1 1 30%">
@@ -81,9 +92,24 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-
         </div>
     </form>
+
+    <mat-form-field class="full-width" appearance="fill">
+        <mat-label><label for="fav-name">Save favorite</label></mat-label>
+        <input matInput id="fav-name"
+               placeholder="Type your favorite name and press ENTER"
+               #favoriteInput
+               [formControl]="favoriteCtrl"
+               [matChipInputFor]="chipList"
+               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+               (matChipInputTokenEnd)="addFavoriteChip($event)">
+        <button *ngIf="favoriteInput.value" matSuffix mat-icon-button aria-label="Clear"
+                (click)="favoriteCtrl.reset()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </mat-form-field>
+
 </div>
 <div mat-dialog-actions>
     <button mat-flat-button (click)="onNoClick()">Cancel</button>

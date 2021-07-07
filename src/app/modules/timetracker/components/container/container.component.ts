@@ -52,7 +52,7 @@ export class ContainerComponent implements OnInit, OnDestroy {
     label: '<i class="fas fa-fw fa-pencil-alt"></i>',
     a11yLabel: 'Edit',
     onClick: ({ event }: { event: CalendarEvent }): void => {
-      this.handleEvent('Edited', event);
+      this.handleEvent(event);
     },
   };
 
@@ -61,7 +61,7 @@ export class ContainerComponent implements OnInit, OnDestroy {
     a11yLabel: 'Delete',
     onClick: ({ event }: { event: CalendarEvent }): void => {
       this.events = this.events.filter((iEvent) => iEvent !== event);
-      this.handleEvent('Deleted', event);
+      this.handleEvent(event);
     },
   };
 
@@ -129,11 +129,7 @@ export class ContainerComponent implements OnInit, OnDestroy {
     });
 
     if (isSameMonth(date, oldDate)) {
-      if ((isSameDay(oldDate, date) && this.activeDayIsOpen) || events.length === 0) {
-        this.activeDayIsOpen = false;
-      } else {
-        this.activeDayIsOpen = true;
-      }
+      this.activeDayIsOpen = !((isSameDay(oldDate, date) && this.activeDayIsOpen) || events.length === 0);
     }
   }
 
@@ -153,18 +149,23 @@ export class ContainerComponent implements OnInit, OnDestroy {
       }
       return iEvent;
     });
-    this.handleEvent('Dropped or resized', event);
+    this.handleEvent(event);
   }
 
-  handleEvent(action: string, event: CalendarEvent): void {
+  handleEvent(event: CalendarEvent): void {
     this.dialog.open(EventEditorComponent, {
-      width: '500px',
-      data: { event, action },
+      width: '640px',
+      data: {
+        event,
+        currentHours: this.calcCurrentHours(event.start),
+        totalHours: this.calcTotalHours(event.start),
+      },
     });
   }
 
   deleteEvent(eventToDelete: CalendarEvent): void {
     this.events = this.events.filter((event) => event !== eventToDelete);
+    this.storage.set('events', this.events);
   }
 
   public getLastUsedHour(date: Date): Date {
@@ -180,19 +181,19 @@ export class ContainerComponent implements OnInit, OnDestroy {
     return last;
   }
 
-  get totalHours(): number {
+  public calcTotalHours(date: Date): number {
     let total = 0.0;
     this.events
-      .filter(e => isSameMonth(this.viewDate, e.start))
+      .filter(e => isSameMonth(date, e.start))
       .forEach(e => total += Number(e.meta?.hours));
 
     return total;
   }
 
-  get currentHours(): number {
+  public calcCurrentHours(date: Date): number {
     let total = 0.0;
     this.events
-      .filter(e => isSameDay(this.viewDate, e.start))
+      .filter(e => isSameDay(date, e.start))
       .forEach(e => total += Number(e.meta?.hours));
 
     return total;
@@ -210,8 +211,8 @@ export class ContainerComponent implements OnInit, OnDestroy {
         width: '640px',
         data: {
           event,
-          currentHours: this.currentHours,
-          totalHours: this.totalHours,
+          currentHours: this.calcCurrentHours(this.viewDate),
+          totalHours: this.calcTotalHours(this.viewDate),
         },
       });
     dialogRef.afterClosed().subscribe(result => {
@@ -229,7 +230,9 @@ export class ContainerComponent implements OnInit, OnDestroy {
         };
         this.events = [...this.events, result];
         this.storage.set('events', this.events);
-        if (this.currentHours >= 8) {
+
+        // move automatically to next day if daily hours are complete
+        if (this.calcCurrentHours(this.viewDate) >= 8) {
           this.viewDate = addDays(this.viewDate, 1);
         }
         this.createEvent();
