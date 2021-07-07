@@ -24,15 +24,34 @@
             </mat-slide-toggle>
             <mat-icon title="Dark mode">bedtime</mat-icon>
         </div>
-        <button mat-button (click)="openPrefs()" title="Preferences" *ngIf="isAuthenticated">
+        <button mat-button [matMenuTriggerFor]="menu2"
+                [matMenuTriggerRestoreFocus]="true"
+                title="Settings" *ngIf="isAuthenticated">
             <mat-icon>settings</mat-icon>
         </button>
+        <mat-menu #menu2="matMenu">
+            <button mat-menu-item (click)="openPrefs()">
+                <mat-icon>settings</mat-icon>
+                My preferences
+            </button>
+            <button mat-menu-item (click)="resetNotifications();">
+                <mat-icon>alarm_on</mat-icon>
+                Reset notifications
+            </button>
+            <ng-container *ngIf="isAuthenticated && isAdmin">
+                <mat-divider></mat-divider>
+                <button mat-menu-item routerLink="/admin">
+                    <mat-icon>verified_user</mat-icon>
+                    Admin area
+                </button>
+            </ng-container>
+        </mat-menu>
     </div>
     <button mat-button [mat-menu-trigger-for]="menu" fxHide="false" fxHide.gt-sm>
         <mat-icon>menu</mat-icon>
     </button>
 </mat-toolbar>
-<mat-menu x-position="before" #menu="matMenu">
+<mat-menu #menu="matMenu">
     <div mat-menu-item>
         <mat-checkbox [formControl]="toggleControl">Dark theme</mat-checkbox>
     </div>
@@ -47,8 +66,17 @@
     </button>
     <button mat-menu-item (click)="openPrefs()" *ngIf="isAuthenticated">
         <mat-icon>settings</mat-icon>
-        Preferences
+        My preferences
     </button>
+    <button mat-menu-item (click)="resetNotifications()" *ngIf="isAuthenticated">
+        <mat-icon>alarm_on</mat-icon>
+        Reset notifications
+    </button>
+    <button mat-menu-item routerLink="/admin" *ngIf="isAuthenticated && isAdmin">
+        <mat-icon>verified_user</mat-icon>
+        Admin area
+    </button>
+    <mat-divider></mat-divider>
     <button mat-menu-item routerLink="/login" *ngIf="!isAuthenticated">
         <mat-icon>power_settings_new</mat-icon>
         Login

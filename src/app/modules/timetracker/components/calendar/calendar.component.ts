@@ -1,20 +1,21 @@
 import {
   AfterViewInit,
-  Component, ElementRef,
+  Component,
   EventEmitter,
   Input,
   Output,
-  ViewChild,
 } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 
 import {
   CalendarEventAction, CalendarEventTimesChangedEvent, CalendarMonthViewDay,
   CalendarView, CalendarEvent,
 } from 'angular-calendar';
 import { Subject } from 'rxjs';
-import { MtxPopover, MtxPopoverTrigger } from '@ng-matero/extensions';
 
 import { BDMetaData } from '../../models/bd-metadata.model';
+import { DialogData, WelcomeComponent } from '../welcome/welcome.component';
+import { StorageService } from '../../services/storage.service';
 
 @Component({
   selector: 'app-calendar',
@@ -35,12 +36,26 @@ export class CalendarComponent implements AfterViewInit {
   @Output() eventClicked = new EventEmitter<CalendarEvent>();
   @Output() eventTimesChanged = new EventEmitter<CalendarEventTimesChangedEvent>();
 
-  @ViewChild('popoverTrigger2') trigger!: MtxPopoverTrigger;
-  @ViewChild('popover2') popover!: MtxPopover;
-
   CalendarView = CalendarView;
 
-  constructor(private readonly ref: ElementRef) {
+  constructor(
+    private readonly dialog: MatDialog,
+    private readonly storage: StorageService,
+  ) {
+  }
+
+  public openDialog(): void {
+    const canShow = this.storage.get<boolean>('showNotifications') ?? true;
+
+    if (canShow) {
+      const dialogRef = this.dialog.open<WelcomeComponent, DialogData, boolean>(WelcomeComponent, {
+        panelClass: 'popover',
+        data: { canShow },
+      });
+      dialogRef.afterClosed().subscribe(r => {
+        this.storage.set('showNotifications', r);
+      });
+    }
   }
 
   calcDuration(event: CalendarEvent<BDMetaData>): string {
@@ -59,11 +74,6 @@ export class CalendarComponent implements AfterViewInit {
   }
 
   public ngAfterViewInit(): void {
-    this.popover.xOffset = (this.ref.nativeElement.clientWidth / 2) - 200;
-    this.trigger.openPopover();
-  }
-
-  public closePopup(): void {
-    this.trigger.closePopover();
+    this.openDialog();
   }
 }

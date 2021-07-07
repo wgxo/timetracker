@@ -35,8 +35,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
-import { MtxPopoverModule } from '@ng-matero/extensions/popover';
-
 import {
   NgxMatDatetimePickerModule,
   NgxMatNativeDateModule,
@@ -83,7 +81,6 @@ const materialModules = [
   NgxMatMomentModule,
   MatDialogModule,
   MatSlideToggleModule,
-  MtxPopoverModule,
 ];
 
 @NgModule({

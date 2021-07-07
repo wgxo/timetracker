@@ -16,6 +16,7 @@ import { StorageService } from './modules/timetracker/services/storage.service';
 import { TaskModel } from './modules/timetracker/models/task.model';
 import { DOCUMENT } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-root',
@@ -25,6 +26,7 @@ import { Subscription } from 'rxjs';
 export class AppComponent implements OnInit, OnDestroy {
   title = 'TimeTracker';
   isAuthenticated = false;
+  isAdmin = false;
   toggleControl = new FormControl(false);
   prefsEvent: Subscription;
   prefs: PreferencesModel = {
@@ -40,7 +42,9 @@ export class AppComponent implements OnInit, OnDestroy {
               private overlay: OverlayContainer,
               @Inject(DOCUMENT) private readonly document: Document,
               public dialog: MatDialog,
-              private storage: StorageService) {
+              private storage: StorageService,
+              private snackBar: MatSnackBar,
+              ) {
     this.authService.isAuthenticated.subscribe(
       (isAuthenticated: boolean) => {
         this.isAuthenticated = isAuthenticated;
@@ -108,6 +112,15 @@ export class AppComponent implements OnInit, OnDestroy {
         this.prefs = result;
         this.storage.set('preferences', result);
       }
+    });
+  }
+
+  public resetNotifications(): void {
+    this.storage.del('showNotifications');
+    this.snackBar.open('All notifications have been enabled', 'Dismiss', {
+      horizontalPosition: 'start',
+      verticalPosition: 'bottom',
+      duration: 3000,
     });
   }
 }

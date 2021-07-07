@@ -11,6 +11,22 @@ export class StorageService {
   constructor() {
   }
 
+  clear(): void {
+    try {
+      localStorage.clear();
+      this.storing$.next(true);
+    } catch (e) {
+    }
+  }
+
+  del(key: string): void {
+    try {
+      localStorage.removeItem(key);
+      this.storing$.next(true);
+    } catch (e) {
+    }
+  }
+
   set(key: string, data: any): void {
     try {
       localStorage.setItem(key, JSON.stringify(data));

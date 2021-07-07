@@ -1,8 +1,8 @@
 <div class="nav-container">
     <div fxLayout.gt-xs="row"
          fxLayoutAlign.gt-xs="space-between center"
-         fxLayout.xs="column"
          fxLayoutGap="16px"
+         fxLayout.xs="column"
          fxLayoutAlign.xs="center center">
         <mat-button-toggle-group name="nav" aria-label="Navigator" value="Today">
             <mat-button-toggle value="Previous"
@@ -26,17 +26,17 @@
             </mat-button-toggle>
         </mat-button-toggle-group>
         <h1>Hours from {{ viewDate | calendarDate: (view + 'ViewTitle'):locale }}</h1>
-        <mat-button-toggle-group name="view" aria-label="Calendar View" value="Month" fxHide.xs>
-            <mat-button-toggle value="Month"
-                               (click)="changeView(CalendarView.Month)"
+        <mat-button-toggle-group #viewGroup fxHide.xs
+                                 aria-label="Calendar View"
+                                 [value]="view"
+                                 (valueChange)="changeView($event)">
+            <mat-button-toggle value="month"
                                [class.active]="view === CalendarView.Month">Month
             </mat-button-toggle>
-            <mat-button-toggle value="Week"
-                               (click)="changeView(CalendarView.Week)"
+            <mat-button-toggle value="week"
                                [class.active]="view === CalendarView.Week">Week
             </mat-button-toggle>
-            <mat-button-toggle value="Day"
-                               (click)="changeView(CalendarView.Day)"
+            <mat-button-toggle value="day"
                                [class.active]="view === CalendarView.Day">Day
             </mat-button-toggle>
         </mat-button-toggle-group>

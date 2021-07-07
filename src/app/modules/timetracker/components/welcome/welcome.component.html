@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>Welcome!</h1>
+<div mat-dialog-content fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="16px">
+    <mat-icon class="material-icons-outlined large" aria-hidden="false" aria-label="Example home icon">edit_calendar
+    </mat-icon>
+    <h3>Double click on any day to start tracking your hours.</h3>
+</div>
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between center">
+    <mat-checkbox [(ngModel)]="canShow">Don't show again</mat-checkbox>
+    <button mat-stroked-button [mat-dialog-close]="!canShow" cdkfocusinitial>Dismiss</button>
+</div>

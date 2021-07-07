@@ -1,22 +1,3 @@
-<div #popoverTrigger2="mtxPopoverTrigger"
-     mtxPopoverTriggerOn="none"
-     [mtxPopoverTriggerFor]="popover2">
-</div>
-<mtx-popover #popover2="mtxPopover"
-             [yOffset]="200">
-    <mat-card class="popover">
-        <mat-card-content class="mat-elevation-z0">
-            <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="16px">
-                <h1>Welcome!</h1>
-                <h3>Double click on any day to start tracking your hours!</h3>
-                <button mat-flat-button color="primary" (click)="closePopup()">
-                    Dismiss
-                </button>
-                <mat-checkbox>Don't show again</mat-checkbox>
-            </div>
-        </mat-card-content>
-    </mat-card>
-</mtx-popover>
 <div class="cal-container mat-elevation-z1">
     <div [ngSwitch]="view">
         <mwl-calendar-month-view
