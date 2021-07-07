@@ -11,12 +11,13 @@ import { isSameMonth } from 'date-fns';
   styleUrls: ['./events.component.scss'],
 })
 export class EventsComponent {
-  @Output() addEvent = new EventEmitter<string>();
-  @Output() sendEvent = new EventEmitter<string>();
   @Input() events: CalendarEvent<BDMetaData>[] = [];
   @Input() refresh = new Subject<any>();
-  @Output() deleteEvent = new EventEmitter<CalendarEvent<BDMetaData>>();
   @Input() viewDate: Date = new Date();
+  @Output() addEvent = new EventEmitter();
+  @Output() sendEvent = new EventEmitter();
+  @Output() saveEvents = new EventEmitter();
+  @Output() deleteEvent = new EventEmitter<CalendarEvent<BDMetaData>>();
 
   get totalHours(): number {
     let total = 0;
@@ -25,7 +26,7 @@ export class EventsComponent {
     return total;
   }
 
-  calcDuration(event: CalendarEvent<BDMetaData>): string {
+  public calcDuration(event: CalendarEvent<BDMetaData>): string {
     if (event && event.end && event.start) {
       return String(((event.end.getTime() - event.start.getTime()) / 1000 / 3600).toFixed(2));
     }
@@ -33,7 +34,7 @@ export class EventsComponent {
     return '0';
   }
 
-  sameMonth(event: CalendarEvent<BDMetaData>): boolean {
+  public sameMonth(event: CalendarEvent<BDMetaData>): boolean {
     return isSameMonth(this.viewDate, event.start);
   }
 }

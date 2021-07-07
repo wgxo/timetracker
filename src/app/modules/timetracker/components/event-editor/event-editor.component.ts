@@ -92,6 +92,7 @@ export class EventEditorComponent extends HasFormComponent implements OnInit {
 
       // send back form values
       this.dialogRef.close({
+        ...this.data.event,
         ...this.form.value,
         meta: {
           hours: this.form.value.hours,

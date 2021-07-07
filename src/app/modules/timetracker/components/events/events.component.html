@@ -5,20 +5,26 @@
             <mat-panel-title class="title">
                 Edit tasks
             </mat-panel-title>
-            <mat-panel-description class="title">Total worked hours: {{ totalHours }}</mat-panel-description>
+            <mat-panel-description class="title">Total monthly hours: {{ totalHours }}</mat-panel-description>
         </mat-expansion-panel-header>
         <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="end" class="toolbar">
             <button mat-flat-button
                     color="primary"
                     (click)="addEvent.emit()">
                 Add task
-                <mat-icon>add</mat-icon>
+                <mat-icon class="icon">add</mat-icon>
+            </button>
+            <button mat-flat-button
+                    color="primary"
+                    (click)="saveEvents.emit()">
+                Save your tasks
+                <mat-icon class="icon">save</mat-icon>
             </button>
             <button mat-flat-button
                     color="primary"
                     (click)="sendEvent.emit()">
                 Send report
-                <mat-icon>send</mat-icon>
+                <mat-icon class="icon">send</mat-icon>
             </button>
         </div>
         <div class="table-responsive">

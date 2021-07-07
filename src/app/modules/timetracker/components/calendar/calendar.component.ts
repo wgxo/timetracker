@@ -16,6 +16,7 @@ import { Subject } from 'rxjs';
 import { BDMetaData } from '../../models/bd-metadata.model';
 import { DialogData, WelcomeComponent } from '../welcome/welcome.component';
 import { StorageService } from '../../services/storage.service';
+import { hoursToMinutes } from 'date-fns';
 
 @Component({
   selector: 'app-calendar',
@@ -75,5 +76,14 @@ export class CalendarComponent implements AfterViewInit {
 
   public ngAfterViewInit(): void {
     this.openDialog();
+  }
+
+  public doAction(event: CalendarEvent, action: CalendarEventAction): void {
+    action.onClick({ event, sourceEvent: null as unknown as MouseEvent });
+  }
+
+  public formatHours(event: CalendarEvent<BDMetaData>): string {
+    const mins = hoursToMinutes(event.meta?.hours ?? 0);
+    return `${String(Math.floor(mins / 60)).padStart(2, '0')}:${String(mins % 60).padStart(2, '0')}`;
   }
 }

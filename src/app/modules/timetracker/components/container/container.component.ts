@@ -26,6 +26,7 @@ import { PreferencesModel } from '../../models/preferences.model';
 import { BDMetaData } from '../../models/bd-metadata.model';
 import { Category } from '../../enums/category.enum';
 import { EventData } from '../../models/event-data.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-timetracker-container',
@@ -49,7 +50,7 @@ export class ContainerComponent implements OnInit, OnDestroy {
   };
 
   editAction: CalendarEventAction = {
-    label: '<i class="fas fa-fw fa-pencil-alt"></i>',
+    label: 'edit',
     a11yLabel: 'Edit',
     onClick: ({ event }: { event: CalendarEvent }): void => {
       this.handleEvent(event);
@@ -57,11 +58,10 @@ export class ContainerComponent implements OnInit, OnDestroy {
   };
 
   deleteAction: CalendarEventAction = {
-    label: '<i class="fas fa-fw fa-trash-alt"></i>',
+    label: 'delete_outline',
     a11yLabel: 'Delete',
     onClick: ({ event }: { event: CalendarEvent }): void => {
-      this.events = this.events.filter((iEvent) => iEvent !== event);
-      this.handleEvent(event);
+      this.deleteEvent(event);
     },
   };
 
@@ -76,6 +76,7 @@ export class ContainerComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly storage: StorageService,
+    private readonly snackbar: MatSnackBar,
   ) {
   }
 
@@ -153,7 +154,8 @@ export class ContainerComponent implements OnInit, OnDestroy {
   }
 
   handleEvent(event: CalendarEvent): void {
-    this.dialog.open(EventEditorComponent, {
+    event.id = String(Date.now());
+    const dialogRef = this.dialog.open(EventEditorComponent, {
       width: '640px',
       data: {
         event,
@@ -161,11 +163,28 @@ export class ContainerComponent implements OnInit, OnDestroy {
         totalHours: this.calcTotalHours(event.start),
       },
     });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        result.end = addMinutes(result.start, (result.meta?.hours ?? this.prefs.hours) * 60);
+        result = {
+          ...result,
+          color: this.getColor(result),
+          // actions: this.actions,
+          draggable: true,
+          resizable: {
+            beforeStart: true,
+            afterEnd: true,
+          },
+        };
+        this.events = this.events.map(e => e.id === result.id ? result : e);
+        this.saveEvents();
+      }
+    });
   }
 
   deleteEvent(eventToDelete: CalendarEvent): void {
     this.events = this.events.filter((event) => event !== eventToDelete);
-    this.storage.set('events', this.events);
+    this.saveEvents();
   }
 
   public getLastUsedHour(date: Date): Date {
@@ -221,7 +240,7 @@ export class ContainerComponent implements OnInit, OnDestroy {
         result = {
           ...result,
           color: this.getColor(result),
-          actions: this.actions,
+          // actions: this.actions,
           draggable: true,
           resizable: {
             beforeStart: true,
@@ -229,7 +248,7 @@ export class ContainerComponent implements OnInit, OnDestroy {
           },
         };
         this.events = [...this.events, result];
-        this.storage.set('events', this.events);
+        this.saveEvents();
 
         // move automatically to next day if daily hours are complete
         if (this.calcCurrentHours(this.viewDate) >= 8) {
@@ -254,5 +273,16 @@ export class ContainerComponent implements OnInit, OnDestroy {
 
   get sortedEvents(): CalendarEvent<BDMetaData>[] {
     return this.events.sort((a, b) => differenceInSeconds(a.start, b.start));
+  }
+
+  public saveEvents(showNotification = false): void {
+    this.storage.set('events', this.events);
+    if (showNotification) {
+      this.snackbar.open('The tasks have been saved', 'Dismiss', {
+        horizontalPosition: 'start',
+        verticalPosition: 'bottom',
+        duration: 3000,
+      });
+    }
   }
 }

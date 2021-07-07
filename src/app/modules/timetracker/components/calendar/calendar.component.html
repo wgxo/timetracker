@@ -64,7 +64,8 @@
                     view="month"
                     (mwlClick)="eventClicked.emit({event: event})">
             </mwl-calendar-event-title>
-            <mwl-calendar-event-actions [event]="event"></mwl-calendar-event-actions>
+            <mwl-calendar-event-actions [event]="event" [customTemplate]="eventActionsTemplate">
+            </mwl-calendar-event-actions>
         </div>
         <div>
             <b>Hours worked: {{ totalHours(events) }}</b>
@@ -75,5 +76,17 @@
 <ng-template
     #eventTitleTemplate
     let-event="event">
-    {{ event.title }}
+    {{ event.start | date:'HH:mm'}} - {{ event.title }} ({{formatHours(event)}})
+</ng-template>
+
+<ng-template
+    #eventActionsTemplate
+    let-event="event">
+    <button mat-icon-button color="primary"
+            [title]="action.a11yLabel"
+            class="action-btn"
+            *ngFor="let action of actions"
+            (mwlClick)="doAction(event, action)">
+        <mat-icon class="icon">{{action.label}}</mat-icon>
+    </button>
 </ng-template>
