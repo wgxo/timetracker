@@ -17,6 +17,7 @@ import { TimeTrackerRoutingModule } from './timetracker-routing.module';
 import { EventEditorComponent } from './components/event-editor/event-editor.component';
 import { PreferencesComponent } from './components/preferences/preferences.component';
 import { HasFormComponent } from './components/has-form.component';
+import { WelcomeComponent } from './components/welcome/welcome.component';
 
 const SHARED_MODULES = [
   FlexLayoutModule,
@@ -37,6 +38,7 @@ const SHARED_MODULES = [
     EventEditorComponent,
     PreferencesComponent,
     HasFormComponent,
+    WelcomeComponent,
   ],
   imports: [
     TimeTrackerRoutingModule,

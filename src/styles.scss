@@ -24,3 +24,10 @@ html, body, app-root, .app-frame {
     height: 100%;
     box-sizing: border-box;
 }
+
+.popover {
+    .mat-dialog-container {
+        color: white;
+        background-color: mat-color($customPrimary, 500);
+    }
+}
