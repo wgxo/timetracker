@@ -1,3 +1,22 @@
+<div #popoverTrigger2="mtxPopoverTrigger"
+     mtxPopoverTriggerOn="none"
+     [mtxPopoverTriggerFor]="popover2">
+</div>
+<mtx-popover #popover2="mtxPopover"
+             [yOffset]="200">
+    <mat-card class="popover">
+        <mat-card-content class="mat-elevation-z0">
+            <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="16px">
+                <h1>Welcome!</h1>
+                <h3>Double click on any day to start tracking your hours!</h3>
+                <button mat-flat-button color="primary" (click)="closePopup()">
+                    Dismiss
+                </button>
+                <mat-checkbox>Don't show again</mat-checkbox>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</mtx-popover>
 <div class="cal-container mat-elevation-z1">
     <div [ngSwitch]="view">
         <mwl-calendar-month-view
@@ -45,9 +64,9 @@
     let-isOpen="isOpen"
     let-events="events"
     let-eventClicked="eventClicked">
-    <div class="cal-open-day-events"  *ngIf="isOpen"
-    fxLayout="column"
-    fxLayoutGap="8px">
+    <div class="cal-open-day-events" *ngIf="isOpen"
+         fxLayout="column"
+         fxLayoutGap="8px">
         <div
                 *ngFor="let event of events"
                 [ngClass]="event?.cssClass"
@@ -77,12 +96,3 @@
     let-event="event">
     {{ event.title }}
 </ng-template>
-
-<mtx-popover #popover2="mtxPopover"
-             [closeOnPanelClick]="true">
-    <mat-card>
-        <mat-card-content>
-            A material design popover component created using Angular with the Angular CDK.
-        </mat-card-content>
-    </mat-card>
-</mtx-popover>

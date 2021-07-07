@@ -4,7 +4,7 @@
          fxLayout.xs="column"
          fxLayoutGap="16px"
          fxLayoutAlign.xs="center center">
-        <mat-button-toggle-group name="nav" aria-label="Navigator" value="Today" appearance="legacy">
+        <mat-button-toggle-group name="nav" aria-label="Navigator" value="Today">
             <mat-button-toggle value="Previous"
                                mwlCalendarPreviousView
                                [view]="view"
@@ -26,7 +26,7 @@
             </mat-button-toggle>
         </mat-button-toggle-group>
         <h1>Hours from {{ viewDate | calendarDate: (view + 'ViewTitle'):locale }}</h1>
-        <mat-button-toggle-group name="view" aria-label="Calendar View" value="Month" fxHide.xs appearance="legacy">
+        <mat-button-toggle-group name="view" aria-label="Calendar View" value="Month" fxHide.xs>
             <mat-button-toggle value="Month"
                                (click)="changeView(CalendarView.Month)"
                                [class.active]="view === CalendarView.Month">Month
