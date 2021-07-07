@@ -56,7 +56,7 @@
             <div fxLayout="row" fxLayoutGap="8px">
                 <mat-form-field appearance="fill" fxFlex="1 1 50%">
                     <mat-label>Project</mat-label>
-                    <mat-select formControlName="project" (valueChange)="getFocals($event)">
+                    <mat-select formControlName="project" (valueChange)="getFocals($event); loadPrefs($event)">
                         <mat-option *ngFor="let project of projects" [value]="project">
                             {{ project }}
                         </mat-option>

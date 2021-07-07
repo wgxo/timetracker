@@ -22,6 +22,7 @@ import { BDMetaData } from '../../models/bd-metadata.model';
 import { StorageService } from '../../services/storage.service';
 import { FavoriteModel } from '../../models/favorite.model';
 import { formatHours } from '../../utils/functions.utils';
+import { PreferencesModel } from '../../models/preferences.model';
 
 @Component({
   selector: 'app-event-editor',
@@ -159,6 +160,7 @@ export class EventEditorComponent extends HasFormComponent implements OnInit {
   public loadFavorite(favorite: string): void {
     const newData = this.favoriteMap.get(favorite) ?? null as unknown as CalendarEvent<BDMetaData>;
     if (newData) {
+      this.getTasks(newData.meta?.task?.category as Category);
       this.form.patchValue({
         project: newData.meta?.project,
         hours: newData.meta?.hours,
@@ -167,6 +169,22 @@ export class EventEditorComponent extends HasFormComponent implements OnInit {
         focalPoint: newData.meta?.focalPoint,
         title: newData.title,
       });
+    }
+  }
+
+  public loadPrefs(project: any): void {
+    const preferences = this.storage.get<PreferencesModel[]>('preferences');
+    if (preferences) {
+      const data = preferences.find(m => m.project === project);
+      if (data) {
+        this.getTasks(data.task.category);
+        this.form.patchValue({
+          hours: data.hours,
+          category: data.task.category as Category,
+          task: data.task.name,
+          focalPoint: data.focalPoint,
+        });
+      }
     }
   }
 }
