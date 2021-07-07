@@ -77,3 +77,12 @@
     let-event="event">
     {{ event.title }}
 </ng-template>
+
+<mtx-popover #popover2="mtxPopover"
+             [closeOnPanelClick]="true">
+    <mat-card>
+        <mat-card-content>
+            A material design popover component created using Angular with the Angular CDK.
+        </mat-card-content>
+    </mat-card>
+</mtx-popover>

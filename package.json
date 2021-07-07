@@ -27,6 +27,7 @@
     "@angular/router": "~11.2.7",
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@kolkov/angular-editor": "^1.2.0",
+    "@ng-matero/extensions": "^11.3.4",
     "@okta/okta-auth-js": "4.8.0",
     "angular-calendar": "^0.28.26",
     "date-fns": "^2.16.1",
