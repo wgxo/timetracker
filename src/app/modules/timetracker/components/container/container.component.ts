@@ -43,7 +43,7 @@ export class ContainerComponent implements OnInit, OnDestroy {
   activeDayIsOpen = true;
   refresh: Subject<any> = new Subject();
   prefsEvent = new Subscription();
-  prefs: PreferencesModel = {
+  prefs: PreferencesModel[] = [{
     project: '',
     hours: 1,
     task: {
@@ -51,7 +51,7 @@ export class ContainerComponent implements OnInit, OnDestroy {
       name: 'Other',
     },
     focalPoint: '',
-  };
+  }];
 
   editAction: CalendarEventAction = {
     label: 'edit',
@@ -117,7 +117,7 @@ export class ContainerComponent implements OnInit, OnDestroy {
   }
 
   private readPrefs(): void {
-    const preferences = this.storage.get<PreferencesModel>('preferences');
+    const preferences = this.storage.get<PreferencesModel[]>('preferences');
     if (preferences) {
       this.prefs = preferences;
     }
@@ -152,7 +152,7 @@ export class ContainerComponent implements OnInit, OnDestroy {
           ...event,
           start: newStart,
           end: newEnd,
-          meta: this.prefs,
+          meta: this.prefs[0],
         };
       }
       return iEvent;
@@ -172,7 +172,7 @@ export class ContainerComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        result.end = addMinutes(result.start, (result.meta?.hours ?? this.prefs.hours) * 60);
+        result.end = addMinutes(result.start, (result.meta?.hours ?? this.prefs[0].hours) * 60);
         result = {
           ...result,
           color: this.getColor(result),
@@ -237,8 +237,8 @@ export class ContainerComponent implements OnInit, OnDestroy {
     const event: CalendarEvent = {
       title: 'New task',
       start: this.getLastUsedHour(this.viewDate),
-      end: addHours(this.getLastUsedHour(this.viewDate), this.prefs.hours),
-      meta: this.prefs,
+      end: addHours(this.getLastUsedHour(this.viewDate), this.prefs[0].hours),
+      meta: this.prefs[0],
     };
     const dialogRef = this.dialog.open<EventEditorComponent, EventData, CalendarEvent<BDMetaData>>(
       EventEditorComponent, {
@@ -251,7 +251,7 @@ export class ContainerComponent implements OnInit, OnDestroy {
       });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        result.end = addMinutes(result.start, (result.meta?.hours ?? this.prefs.hours) * 60);
+        result.end = addMinutes(result.start, (result.meta?.hours ?? this.prefs[0].hours) * 60);
         result = {
           ...result,
           color: this.getColor(result),

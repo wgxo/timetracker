@@ -1,50 +1,72 @@
-<h1 mat-dialog-title>Preferences</h1>
+<h1 mat-dialog-title>Project settings</h1>
+<div mat-dialog-actions>
+    <button mat-stroked-button
+            (click)="addTab()">
+        Add new project
+    </button>
+</div>
 <div mat-dialog-content>
-    <form [formGroup]="form">
-        <div fxLayout="column" fxLayoutGap="8px" fxLayoutAlign="start stretch">
-            <mat-form-field appearance="fill">
-                <mat-label>Default project</mat-label>
-                <mat-select formControlName="project" (valueChange)="getFocals($event)">
-                    <mat-option *ngFor="let project of projects" [value]="project">
-                        {{ project }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+    <mat-tab-group [selectedIndex]="selected"
+                   (selectedIndexChange)="selected = $event">
+        <mat-tab *ngFor="let tab of tabs; let index = index" [label]="tab">
 
-            <mat-form-field appearance="fill">
-                <mat-label>Focal point</mat-label>
-                <mat-select formControlName="focalPoint">
-                    <mat-option *ngFor="let focal of focals" [value]="focal">
-                        {{ focal }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+            <form [formGroup]="form[index]">
+                <div fxLayout="column" fxLayoutGap="8px" fxLayoutAlign="start stretch">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Default project</mat-label>
+                        <mat-select formControlName="project" (valueChange)="tabs[index]=$event" #project>
+                            <mat-option [value]="project"
+                                        *ngFor="let project of timeTrackerService.getProjects() | async">
+                                {{ project }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
 
-            <mat-form-field appearance="fill">
-                <mat-label>Default category</mat-label>
-                <mat-select formControlName="category" (valueChange)="getTasks($event)">
-                    <mat-option *ngFor="let category of categories" [value]="category">
-                        {{ category }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Focal point</mat-label>
+                        <mat-select formControlName="focalPoint">
+                            <mat-option [value]="focal"
+                                        *ngFor="let focal of timeTrackerService.getFocalPoints(project.value) | async">
+                                {{ focal }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
 
-            <mat-form-field appearance="fill">
-                <mat-label>Default task</mat-label>
-                <mat-select formControlName="task">
-                    <mat-option *ngFor="let task of tasks" [value]="task">
-                        {{ task }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Default category</mat-label>
+                        <mat-select formControlName="category" #category>
+                            <mat-option *ngFor="let category of getCategories()" [value]="category">
+                                {{ category }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
 
-            <mat-form-field appearance="fill">
-                <mat-label>Default hours</mat-label>
-                <input matInput formControlName="hours">
-            </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Default task</mat-label>
+                        <mat-select formControlName="task">
+                            <mat-option *ngFor="let task of timeTrackerService.getTasks(category.value) | async"
+                                        [value]="task.name">
+                                {{ task.name }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
 
-        </div>
-    </form>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Default hours</mat-label>
+                        <input matInput formControlName="hours">
+                    </mat-form-field>
+
+                </div>
+            </form>
+
+            <button mat-stroked-button
+                    class="example-delete-tab-button"
+                    [disabled]="tabs.length === 1"
+                    (click)="removeTab(index)">
+                Delete project
+            </button>
+        </mat-tab>
+    </mat-tab-group>
 </div>
 <div mat-dialog-actions>
     <button mat-flat-button (click)="onNoClick()">Cancel</button>

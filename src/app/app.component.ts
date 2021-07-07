@@ -29,12 +29,12 @@ export class AppComponent implements OnInit, OnDestroy {
   isAdmin = false;
   toggleControl = new FormControl(false);
   prefsEvent: Subscription;
-  prefs: PreferencesModel = {
+  prefs: PreferencesModel[] = [{
     project: '',
     hours: 1,
     task: null as unknown as TaskModel,
     focalPoint: '',
-  };
+  }];
 
   @HostBinding('class') className = '';
 
@@ -44,7 +44,7 @@ export class AppComponent implements OnInit, OnDestroy {
               public dialog: MatDialog,
               private storage: StorageService,
               private snackBar: MatSnackBar,
-              ) {
+  ) {
     this.authService.isAuthenticated.subscribe(
       (isAuthenticated: boolean) => {
         this.isAuthenticated = isAuthenticated;
@@ -65,7 +65,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private readPrefs(): void {
-    const preferences = this.storage.get<PreferencesModel>('preferences');
+    const preferences = this.storage.get<PreferencesModel[]>('preferences');
     if (preferences) {
       this.prefs = preferences;
     }
@@ -97,12 +97,13 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   isPreferencesModel(object: any): object is PreferencesModel {
-    return object && 'project' in object && 'hours' in object &&
-      'task' in object && 'focalPoint' in object;
+    return object && Array.isArray(object) && object.length > 0 &&
+      'project' in object[0] && 'hours' in object[0] &&
+      'task' in object[0] && 'focalPoint' in object[0];
   }
 
   openPrefs(): void {
-    const dialogRef = this.dialog.open(PreferencesComponent, {
+    const dialogRef = this.dialog.open<PreferencesComponent, PreferencesModel[], PreferencesModel[]>(PreferencesComponent, {
       width: '500px',
       data: this.prefs,
     });

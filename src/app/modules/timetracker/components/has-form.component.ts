@@ -32,19 +32,19 @@ export class HasFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.timeTrackerService.getProjects().then(p => this.projects = p);
+    this.timeTrackerService.getProjects().subscribe(p => this.projects = p);
     this.categories = Object.keys(Category)
       .map(key => Category[key as keyof typeof Category]);
   }
 
   getFocals(project: string): void {
     this.timeTrackerService.getFocalPoints(project)
-      .then(f => this.focals = f);
+      .subscribe(f => this.focals = f);
   }
 
   getTasks(category: string): void {
     this.timeTrackerService.getTasks(category as Category)
-      .then(t => this.tasks = t.map(m => m.name));
+      .subscribe(t => this.tasks = t.map(m => m.name));
   }
 
   getPreferencesModel(): PreferencesModel {
